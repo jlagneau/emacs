@@ -414,7 +414,16 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 		     :italic t))))
 
   (use-package git-gutter
-    :hook (prog-mode . git-gutter-mode))
+    :hook (prog-mode . git-gutter-mode)
+    :custom
+    (git-gutter:window-width 1)
+    (git-gutter:modified-sign " ")
+    (git-gutter:added-sign " ")
+    (git-gutter:deleted-sign " ")
+    :custom-face
+    (git-gutter:modified ((t (:background "#FFA500" :foreground "#FFA500"))))
+    (git-gutter:added ((t (:background "#00FF7F" :foreground "#00FF7F"))))
+    (git-gutter:deleted ((t (:background "#DC143C" :foreground "#DC143C")))))
 #+end_src
 
 *** PDF viewer.
