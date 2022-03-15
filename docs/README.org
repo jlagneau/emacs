@@ -310,7 +310,10 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 
 #+begin_src emacs-lisp
   (use-package fira-code-mode
-    :hook (prog-mode . fira-code-mode))
+    :hook (prog-mode . fira-code-mode)
+    :config (fira-code-mode-set-font)
+    :custom
+    fira-code-mode-disabled-ligatures '("[]" "#{" "#(" "#_" "#_(" "x"))
 #+end_src
 
 *** :sparkles: Emoji.
