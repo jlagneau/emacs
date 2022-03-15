@@ -393,10 +393,12 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 
   (use-package blamer
     :defer 20
-    :hook (prog-mode . blamer-mode)
+    :hook ((prog-mode . blamer-mode)
+	   (org-mode . blamer-mode))
+    :bind (("s-i" . blamer-show-commit-info))
     :config
-    (setq blamer-view 'overlay-right
-	  blamer-type 'visual
+    (setq blamer-view 'overlay
+	  blamer-type 'both
 	  blamer-max-commit-message-length 50
 	  blamer-author-formatter " ✎ [%s] - "
 	  blamer-commit-formatter "● %s ● ")
