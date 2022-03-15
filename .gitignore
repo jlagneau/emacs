@@ -1,0 +1,9 @@
+*~
+\#*\#
+.\#*
+*.elc
+/.cache/
+/.extension/
+/elpa/
+/straight/
+/eln-cache/
