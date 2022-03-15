@@ -385,6 +385,12 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (custom-set-variables
      '(magit-todos-keywords (list "TODO" "FIXME"))))
 
+  (use-package transient
+    :custom
+    (transient-history-file (concat lec/cached-dir "transient/history.el"))
+    (transient-levels-file  (concat lec/cached-dir "transient/levels.el"))
+    (transient-values-file  (concat lec/cached-dir "transient/values.el")))
+
   (use-package blamer
     :defer 20
     :hook (prog-mode . blamer-mode)
