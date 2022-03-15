@@ -648,7 +648,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (lsp-signature-render-documentation nil)
     (lsp-enable-text-document-color nil)
     (lsp-completion-provider :capf)
-    ;(gc-cons-threshold 100000000) ; GMCH should handle it.
+    ;(gc-cons-threshold 100000000) ; GCMH should handle it.
     (read-process-output-max (* 3 1024 1024))
     :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
 	   ;(XXX-mode . lsp)
