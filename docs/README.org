@@ -13,6 +13,43 @@ The directory structure is set up in [[../init.el][init.el]].
 - ~lec/doc-file~ is this actual file.
 - ~lec/tangled-doc-file~ is the output file for all tangled blocks from ~lec/doc-file~.
 
+*** Packages managment.
+
+#+begin_src emacs-lisp
+  (setq straight-base-dir lec/cached-dir)
+  (setq straight-repository-branch "develop")
+  (setq comp-deferred-compilation-deny-list nil)
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" lec/cached-dir))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  ;; Install use-package
+  (straight-use-package 'use-package)
+  (setq use-package-always-ensure t)
+
+  ;; Configure use-package to use straight-use-package transparently.
+  (use-package straight
+    :custom (straight-use-package-by-default t))
+#+end_src
+
+*** Benchmark emacs start-up.
+
+#+begin_src emacs-lisp
+  (use-package benchmark-init
+    :config
+    (require 'benchmark-init-modes) ; explicitly required
+    (add-hook 'after-init-hook #'benchmark-init/deactivate))
+#+end_src
+
 *** Utilitiy functions.
 
 #+begin_src emacs-lisp
@@ -41,43 +78,6 @@ issue warning and errors.
     (list obsolete-name current-name when docstring)))
 #+end_src
 
-*** Packages managment.
-
-#+begin_src emacs-lisp
-  (setq straight-base-dir lec/cached-dir)
-  (setq straight-repository-branch "develop")
-  (setq comp-deferred-compilation-deny-list nil)
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-	 (expand-file-name "straight/repos/straight.el/bootstrap.el" lec/cached-dir))
-	(bootstrap-version 5))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
-
-  ;; Install use-package
-  (straight-use-package 'use-package)
-  (setq use-package-always-ensure t)
-
-  ;; Configure use-package to use straight-use-package transparently.
-  (use-package straight
-    :custom (straight-use-package-by-default t))
-#+end_src
-
-*** Benchmark emacs start-up.
-
-#+begin_src emacs-lisp
-  (use-package benchmark-init
-    :config
-    (require 'benchmark-init-modes) ; explicitly required
-    (add-hook 'after-init-hook #'benchmark-init/deactivate))
-#+end_src
-
 *** Base emacs configuration.
 
 **** Miscellaneous defaults.
@@ -92,22 +92,21 @@ issue warning and errors.
   (menu-bar-mode -1)                ; Disable the menu bar.
   (global-so-long-mode 1)           ; Fix performance for long lines files.
   (electric-pair-mode 1)            ; Pair useful things likes parenthesis or quotes.
-  (show-paren-mode 1)               ; Highlight pair of parenthesis, brackets and curly braces.
   (global-hl-line-mode 1)           ; Highlight the current line.
   (column-number-mode 1)            ; Display column number in modeline.
 #+end_src
 
 **** Matching elements (parenthesis, quotes, etc).
 
-[[https://github.com/Fanael/rainbow-delimiters][Rainbow-delimiters]] and [[http://elpa.gnu.org/packages/rainbow-mode.html][rainbow-mode]] documentation.
+[[https://github.com/Fanael/rainbow-delimiters][Rainbow-delimiters]] documentation.
 
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :hook ((prog-mode . rainbow-delimiters-mode)))
 
-  (use-package rainbow-mode
-    :hook ((prog-mode . rainbow-mode)
-           (text-mode . rainbow-mode)))
+  (use-package paren
+    :config
+    (show-paren-mode +1))
 #+end_src
 
 **** Whitespaces.
@@ -170,7 +169,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (defun lec/colorize-compilation-buffer ()
       "Colorize the compilation buffer on color escape codes."
       (when (eq major-mode 'compilation-mode)
-	(ansi-or-apply-on-region compilation-filter-start (point-max))))
+        (ansi-or-apply-on-region compilation-filter-start (point-max))))
     :hook (compilation-filter . lec/colorize-compilation-buffer))
 #+end_src
 
@@ -213,27 +212,27 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 #+begin_src emacs-lisp
   (defun lec/helm-hide-minibuffer-maybe ()
       (when (with-helm-buffer helm-echo-input-in-header-line)
-	(let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-	  (overlay-put ov 'window (selected-window))
-	  (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-				  `(:background ,bg-color :foreground ,bg-color)))
-	  (setq-local cursor-type nil))))
+        (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+          (overlay-put ov 'window (selected-window))
+          (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                                  `(:background ,bg-color :foreground ,bg-color)))
+          (setq-local cursor-type nil))))
 
   (use-package helm
     :defer 0.1
     :bind (("C-c h" . helm-command-prefix)
-	   ("C-x c" . nil)
-	   ("M-x" . helm-M-x)
-	   ("C-x C-f" . helm-find-files)
-	   ("C-x b" . helm-buffers-list)
-	   ("C-x c o" . helm-occur)
-	   ("M-y" . helm-show-kill-ring)
-	   ("C-x r b" . helm-filtered-bookmarks)
-	   :map helm-map
-	   ("TAB" . helm-execute-persistent-action)
-	   ("<tab>" . helm-execute-persistent-action)
-	   ("C-i" . helm-execute-persistent-action)
-	   ("C-z" . helm-select-action))
+           ("C-x c" . nil)
+           ("M-x" . helm-M-x)
+           ("C-x C-f" . helm-find-files)
+           ("C-x b" . helm-buffers-list)
+           ("C-x c o" . helm-occur)
+           ("M-y" . helm-show-kill-ring)
+           ("C-x r b" . helm-filtered-bookmarks)
+           :map helm-map
+           ("TAB" . helm-execute-persistent-action)
+           ("<tab>" . helm-execute-persistent-action)
+           ("C-i" . helm-execute-persistent-action)
+           ("C-z" . helm-select-action))
     :hook ((helm-minibuffer-set-up . lec/helm-hide-minibuffer-maybe))
     :custom
     (helm-M-x-fuzzy-match                  t "Fuzzy matching with M-x.")
@@ -260,7 +259,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
   (use-package helm-projectile
     :after helm projectile
     :bind (("C-c h p" . helm-projectile-switch-project)
-	   ("C-c h f" . helm-projectile-find-file))
+           ("C-c h f" . helm-projectile-find-file))
     :config
     (helm-projectile-on))
 #+end_src
@@ -348,6 +347,16 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
   (setq linum-format "%3d ")
 #+end_src
 
+*** Display colors for hex, rgb, and other common colors codes.
+
+[[http://elpa.gnu.org/packages/rainbow-mode.html][Rainbow-mode]] documentation.
+
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :hook ((prog-mode . rainbow-mode)
+           (text-mode . rainbow-mode)))
+#+end_src
+
 ** Utility packages.
 
 *** Garbage collection magic.
@@ -367,7 +376,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
   (use-package projectile
     :config
     (setq projectile-cache-file (concat lec/cached-dir "projectile.cache" )
-	  projectile-known-projects-file (concat lec/cached-dir "projectile-known-projects.eld"))
+          projectile-known-projects-file (concat lec/cached-dir "projectile-known-projects.eld"))
     (projectile-mode +1))
 #+end_src
 
@@ -383,8 +392,8 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :hook (magit-mode . magit-todos-mode)
     :config
     (setq magit-todos-recursive t
-	  magit-todos-depth 10
-	  magit-todos-exclude-globs '("*Pods*" ".git/" "*elpa*" "*var/lsp/*" "*straight*"))
+          magit-todos-depth 10
+          magit-todos-exclude-globs '("*Pods*" ".git/" "*elpa*" "*var/lsp/*" "*straight*"))
     (custom-set-variables
      '(magit-todos-keywords (list "TODO" "FIXME"))))
 
@@ -397,7 +406,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
   (use-package blamer
     :defer 0.1
     :hook ((prog-mode . blamer-mode)
-	   (org-mode . blamer-mode))
+           (org-mode . blamer-mode))
     :bind (("s-i" . blamer-show-commit-info))
     :custom
     (blamer-idle-time 0.5)
@@ -410,9 +419,9 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (blamer-commit-formatter "● %s ● ")
     :custom-face
     (blamer-face ((t :foreground "#7a88cf"
-		     :background nil
-		     :height 100
-		     :italic t))))
+                     :background nil
+                     :height 100
+                     :italic t))))
 
   (use-package git-gutter
     :hook (prog-mode . git-gutter-mode)
@@ -457,8 +466,8 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
      `((nil "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US") nil utf-8)))
     :config
     (flycheck-aspell-define-checker "org"
-				    "Org" ("--add-filter" "url")
-				    (org-mode))
+                                    "Org" ("--add-filter" "url")
+                                    (org-mode))
     (add-to-list 'flycheck-checkers 'org-aspell-dynamic)
     (add-to-list 'flycheck-checkers 'markdown-aspell-dynamic)
     (add-to-list 'flycheck-checkers 'html-aspell-dynamic)
@@ -472,84 +481,84 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
       :defer 0.5
       :init
       (with-eval-after-load 'winum
-	(define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+        (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
       :config
       (progn
-	(setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-	      treemacs-deferred-git-apply-delay        0.5
-	      treemacs-directory-name-transformer      #'identity
-	      treemacs-display-in-side-window          t
-	      treemacs-eldoc-display                   'simple
-	      treemacs-file-event-delay                5000
-	      treemacs-file-extension-regex            treemacs-last-period-regex-value
-	      treemacs-file-follow-delay               0.2
-	      treemacs-file-name-transformer           #'identity
-	      treemacs-follow-after-init               t
-	      treemacs-expand-after-init               t
-	      treemacs-find-workspace-method           'find-for-file-or-pick-first
-	      treemacs-git-command-pipe                ""
-	      treemacs-goto-tag-strategy               'refetch-index
-	      treemacs-indentation                     2
-	      treemacs-indentation-string              " "
-	      treemacs-is-never-other-window           nil
-	      treemacs-max-git-entries                 5000
-	      treemacs-missing-project-action          'ask
-	      treemacs-move-forward-on-expand          nil
-	      treemacs-no-png-images                   nil
-	      treemacs-no-delete-other-windows         t
-	      treemacs-project-follow-cleanup          nil
-	      treemacs-persist-file                    (expand-file-name "treemacs-persist" lec/cached-dir)
-	      treemacs-position                        'left
-	      treemacs-read-string-input               'from-child-frame
-	      treemacs-recenter-distance               0.1
-	      treemacs-recenter-after-file-follow      nil
-	      treemacs-recenter-after-tag-follow       nil
-	      treemacs-recenter-after-project-jump     'always
-	      treemacs-recenter-after-project-expand   'on-distance
-	      treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask" "/vendor" "/target")
-	      treemacs-show-cursor                     nil
-	      treemacs-show-hidden-files               t
-	      treemacs-silent-filewatch                nil
-	      treemacs-silent-refresh                  nil
-	      treemacs-sorting                         'alphabetic-asc
-	      treemacs-select-when-already-in-treemacs 'move-back
-	      treemacs-space-between-root-nodes        t
-	      treemacs-tag-follow-cleanup              t
-	      treemacs-tag-follow-delay                1.5
-	      treemacs-text-scale                      nil
-	      treemacs-user-mode-line-format           'none
-	      treemacs-user-header-line-format         nil
-	      treemacs-wide-toggle-width               70
-	      treemacs-width                           35
-	      treemacs-width-increment                 1
-	      treemacs-width-is-initially-locked       t
-	      treemacs-workspace-switch-cleanup        nil)
+        (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+              treemacs-deferred-git-apply-delay        0.5
+              treemacs-directory-name-transformer      #'identity
+              treemacs-display-in-side-window          t
+              treemacs-eldoc-display                   'simple
+              treemacs-file-event-delay                5000
+              treemacs-file-extension-regex            treemacs-last-period-regex-value
+              treemacs-file-follow-delay               0.2
+              treemacs-file-name-transformer           #'identity
+              treemacs-follow-after-init               t
+              treemacs-expand-after-init               t
+              treemacs-find-workspace-method           'find-for-file-or-pick-first
+              treemacs-git-command-pipe                ""
+              treemacs-goto-tag-strategy               'refetch-index
+              treemacs-indentation                     2
+              treemacs-indentation-string              " "
+              treemacs-is-never-other-window           nil
+              treemacs-max-git-entries                 5000
+              treemacs-missing-project-action          'ask
+              treemacs-move-forward-on-expand          nil
+              treemacs-no-png-images                   nil
+              treemacs-no-delete-other-windows         t
+              treemacs-project-follow-cleanup          nil
+              treemacs-persist-file                    (expand-file-name "treemacs-persist" lec/cached-dir)
+              treemacs-position                        'left
+              treemacs-read-string-input               'from-child-frame
+              treemacs-recenter-distance               0.1
+              treemacs-recenter-after-file-follow      nil
+              treemacs-recenter-after-tag-follow       nil
+              treemacs-recenter-after-project-jump     'always
+              treemacs-recenter-after-project-expand   'on-distance
+              treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask" "/vendor" "/target")
+              treemacs-show-cursor                     nil
+              treemacs-show-hidden-files               t
+              treemacs-silent-filewatch                nil
+              treemacs-silent-refresh                  nil
+              treemacs-sorting                         'alphabetic-asc
+              treemacs-select-when-already-in-treemacs 'move-back
+              treemacs-space-between-root-nodes        t
+              treemacs-tag-follow-cleanup              t
+              treemacs-tag-follow-delay                1.5
+              treemacs-text-scale                      nil
+              treemacs-user-mode-line-format           'none
+              treemacs-user-header-line-format         nil
+              treemacs-wide-toggle-width               70
+              treemacs-width                           35
+              treemacs-width-increment                 1
+              treemacs-width-is-initially-locked       t
+              treemacs-workspace-switch-cleanup        nil)
 
-	;; The default width and height of the icons is 22 pixels. If you are
-	;; using a Hi-DPI display, uncomment this to double the icon size.
-	;;(treemacs-resize-icons 44)
+        ;; The default width and height of the icons is 22 pixels. If you are
+        ;; using a Hi-DPI display, uncomment this to double the icon size.
+        ;;(treemacs-resize-icons 44)
 
-	(treemacs-follow-mode t)
-	(treemacs-filewatch-mode t)
-	(treemacs-fringe-indicator-mode 'always)
+        (treemacs-follow-mode t)
+        (treemacs-filewatch-mode t)
+        (treemacs-fringe-indicator-mode 'always)
 
-	(pcase (cons (not (null (executable-find "git")))
-		     (not (null treemacs-python-executable)))
-	  (`(t . t)
-	   (treemacs-git-mode 'deferred))
-	  (`(t . _)
-	   (treemacs-git-mode 'simple)))
+        (pcase (cons (not (null (executable-find "git")))
+                     (not (null treemacs-python-executable)))
+          (`(t . t)
+           (treemacs-git-mode 'deferred))
+          (`(t . _)
+           (treemacs-git-mode 'simple)))
 
-	(treemacs-hide-gitignored-files-mode nil))
+        (treemacs-hide-gitignored-files-mode nil))
       :bind (nil
-	     :map global-map
-	     ("M-0"       . treemacs-select-window)
-	     ("C-x t 1"   . treemacs-delete-other-windows)
-	     ("C-x t t"   . treemacs)
-	     ("C-x t d"   . treemacs-select-directory)
-	     ("C-x t B"   . treemacs-bookmark)
-	     ("C-x t C-t" . treemacs-find-file)
-	     ("C-x t M-t" . treemacs-find-tag)))
+             :map global-map
+             ("M-0"       . treemacs-select-window)
+             ("C-x t 1"   . treemacs-delete-other-windows)
+             ("C-x t t"   . treemacs)
+             ("C-x t d"   . treemacs-select-directory)
+             ("C-x t B"   . treemacs-bookmark)
+             ("C-x t C-t" . treemacs-find-file)
+             ("C-x t M-t" . treemacs-find-tag)))
 
     (use-package treemacs-projectile
       :after (treemacs projectile))
@@ -577,19 +586,19 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
   (use-package dashboard
     :config
     (setq dashboard-center-content t
-	  dashboard-startup-banner 'logo
-	  dashboard-set-navigator t
-	  dashboard-navigator-buttons
-	  `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
-	     (,nil "Update packages" "Update all packages" (lambda (&rest _) (straight-pull-all)) warning)
-	     (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (concat user-emacs-directory "init.el"))) warning))
-	    ((,nil "System services" "Manage services" (lambda (&rest _) (daemons)) error)
-	     (,nil "System processes" "Manage processes" (lambda (&rest _) (proced)) error)))
-	  dashboard-show-shortcuts nil
-	  dashboard-set-heading-icons t
-	  dashboard-set-file-icons t
-	  dashboard-items '((recents  . 10)
-			    (projects . 10)))
+          dashboard-startup-banner 'logo
+          dashboard-set-navigator t
+          dashboard-navigator-buttons
+          `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
+             (,nil "Update packages" "Update all packages" (lambda (&rest _) (straight-pull-all)) warning)
+             (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (concat user-emacs-directory "init.el"))) warning))
+            ((,nil "System services" "Manage services" (lambda (&rest _) (daemons)) error)
+             (,nil "System processes" "Manage processes" (lambda (&rest _) (proced)) error)))
+          dashboard-show-shortcuts nil
+          dashboard-set-heading-icons t
+          dashboard-set-file-icons t
+          dashboard-items '((recents  . 10)
+                            (projects . 10)))
     (dashboard-setup-startup-hook))
 #+end_src
 
@@ -666,11 +675,11 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     ;(gc-cons-threshold 100000000) ; GCMH should handle it.
     (read-process-output-max (* 3 1024 1024))
     :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-	   ;(XXX-mode . lsp)
-	   ; or better yet, use lsp-deferred
-	   ;(XXX-mode . lsp-deferred)
-	   ;; if you want which-key integration
-	   (lsp-mode . lsp-enable-which-key-integration))
+           ;(XXX-mode . lsp)
+           ; or better yet, use lsp-deferred
+           ;(XXX-mode . lsp-deferred)
+           ;; if you want which-key integration
+           (lsp-mode . lsp-enable-which-key-integration))
     :commands lsp)
 
   ;; optionally
@@ -714,7 +723,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 #+begin_src emacs-lisp
   (use-package cc-mode
     :hook ((c-mode . lsp-deferred)
-	   (c++-mode . lsp-deferred)))
+           (c++-mode . lsp-deferred)))
 #+end_src
 
 *** Org.
