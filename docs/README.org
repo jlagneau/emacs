@@ -420,7 +420,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :custom-face
     (blamer-face ((t :foreground "#7a88cf"
                      :background nil
-                     :height 100
+                     :height 80
                      :italic t))))
 
   (use-package git-gutter
