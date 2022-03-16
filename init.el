@@ -2,8 +2,8 @@
 (when (version< emacs-version "27")
   (message "Emacs version < 27 do not support early-init.el. Load it manually.")
   (load (concat
-	 (file-name-directory load-file-name)
-	 "early-init")
+         (file-name-directory load-file-name)
+         "early-init")
    'noerror 'nomessage))
 
 ;; Directory structure.
@@ -16,7 +16,8 @@
 (defconst lec/doc-file (concat lec/doc-dir "README.org")
   "Documentation file for the configuration.")
 
-(defconst lec/tangled-doc-file (concat lec/cached-dir "tangled-configuration.el")
+(defconst lec/tangled-doc-file
+  (concat lec/cached-dir "tangled-configuration.el")
   "File destination for tangled code blocks from the documentation.")
 
 ;; Utility functions to handle documentation tangling.
@@ -31,7 +32,8 @@
   (lec/--tangle-file-to-cache-dir))
 
 (defun lec/tangle-current-documentation ()
-  "If the the file currently edited is the documentation configuration, tangle the code blocks."
+  "If the the file currently edited is the documentation configuration, tangle
+the code blocks."
   (interactive)
   (when (string-match lec/doc-file buffer-file-name)
     (lec/tangle-documentation)))
