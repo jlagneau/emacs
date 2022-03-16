@@ -578,6 +578,14 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     ;  :config (treemacs-set-scope-type 'Perspectives))
 #+end_src
 
+*** Editorconfig.
+
+#+begin_src emacs-lisp
+  (use-package editorconfig
+    :config
+    (editorconfig-mode 1))
+#+end_src
+
 *** Dashboard buffer at launch.
 
 [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]] documentation.
