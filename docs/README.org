@@ -85,13 +85,10 @@ issue warning and errors.
 #+begin_src emacs-lisp
   (use-package emacs
     :custom
-    (inibit-startup-message t)
+    (inibit-startup-message +1)
     (ring-bell-function 'ignore)
-    (scroll-margin 0)
-    (scroll-conservatively 100000)
-    (scroll-preserve-screen-position 1)
     (large-file-warning-threshold 100000000)
-    (load-prefer-newer t)
+    (load-prefer-newer +1)
     (confirm-kill-processes nil)
     :config
     (scroll-bar-mode -1)
