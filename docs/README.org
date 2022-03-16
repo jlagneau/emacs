@@ -395,22 +395,23 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (transient-values-file  (concat lec/cached-dir "transient/values.el")))
 
   (use-package blamer
-    :defer 20
+    :defer 0.1
     :hook ((prog-mode . blamer-mode)
 	   (org-mode . blamer-mode))
     :bind (("s-i" . blamer-show-commit-info))
-    :config
-    (setq blamer-view 'overlay
-	  blamer-type 'both
-	  blamer-max-commit-message-length 50
-	  blamer-author-formatter " ✎ [%s] - "
-	  blamer-commit-formatter "● %s ● ")
     :custom
-    (blamer-idle-time 1.0)
-    (blamer-min-offset 10)
+    (blamer-idle-time 0.5)
+    (blamer-min-offset 5)
+    (blamer-view 'overlay-right)
+    (blamer-type 'both)
+    (blamer-max-commit-message-length 50)
+    (blamer-force-truncate-long-line t)
+    (blamer-author-formatter " ✎ %s - ")
+    (blamer-commit-formatter "● %s ● ")
     :custom-face
-    (blamer-face ((t :foreground "#E46876"
-		     :height 140
+    (blamer-face ((t :foreground "#7a88cf"
+		     :background nil
+		     :height 100
 		     :italic t))))
 
   (use-package git-gutter
