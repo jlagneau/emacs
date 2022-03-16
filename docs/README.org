@@ -83,17 +83,47 @@ issue warning and errors.
 **** Miscellaneous defaults.
 
 #+begin_src emacs-lisp
-  (setq inhibit-startup-message t)  ; Disable the splash screen.
-  (setq ring-bell-function 'ignore) ; Disable the bell.
-  (scroll-bar-mode -1)              ; Disable visible scrollbar.
-  (tool-bar-mode -1)                ; Disable the toolbar.
-  (tooltip-mode -1)                 ; Disable tooltips.
-  (set-fringe-mode 10)              ; Give some breathing room.
-  (menu-bar-mode -1)                ; Disable the menu bar.
-  (global-so-long-mode 1)           ; Fix performance for long lines files.
-  (electric-pair-mode 1)            ; Pair useful things likes parenthesis or quotes.
-  (global-hl-line-mode 1)           ; Highlight the current line.
-  (column-number-mode 1)            ; Display column number in modeline.
+  (use-package emacs
+    :custom
+    (inibit-startup-message t)
+    (ring-bell-function 'ignore)
+    (scroll-margin 0)
+    (scroll-conservatively 100000)
+    (scroll-preserve-screen-position 1)
+    (large-file-warning-threshold 100000000)
+    (load-prefer-newer t)
+    (confirm-kill-processes nil)
+    :config
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
+    (menu-bar-mode -1)
+    (tooltip-mode -1)
+    (set-fringe-mode 10)
+    (column-number-mode +1)
+    (size-indication-mode +1))
+#+end_src
+
+Highlight the current line.
+
+#+begin_src emacs-lisp
+  (use-package hl-line
+    :config
+    (global-hl-line-mode +1))
+#+end_src
+
+Reduce the performance impact of long lines in a file (eg. minified files).
+
+#+begin_src emacs-lisp
+  (use-package so-long
+    :config
+    (global-so-long-mode +1))
+#+end_src
+
+Always insert the closing pair of parenthesis, brackets, curly brackets, and double quotes.
+
+#+begin_src emacs-lisp
+  (use-package elec-pair
+    :config (electric-pair-mode +1))
 #+end_src
 
 **** Matching elements (parenthesis, quotes, etc).
@@ -112,8 +142,11 @@ issue warning and errors.
 **** Whitespaces.
 
 #+begin_src emacs-lisp
-  (setq-default whitespace-style '(face trailing empty space-after-tab space-before-tab))
-  (global-whitespace-mode t)
+  (use-package whitespace
+    :custom
+    (whitespace-style '(face trailing empty space-after-tab space-before-tab))
+    :config
+    (global-whitespace-mode +1))
 #+end_src
 
 **** Handle emacs backup files.
@@ -146,7 +179,14 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 **** Change the location of the recent files
 
 #+begin_src emacs-lisp
-  (setq recentf-save-file (concat lec/cached-dir "recentf"))
+  (use-package recentf
+    :custom
+    (recentf-save-file (concat lec/cached-dir "recentf"))
+    (recentf-max-saved-items 500)
+    (recentf-max-menu-items 15)
+    (recentf-auto-cleanup 'never)
+    :config
+    (recentf-mode +1))
 #+end_src
 
 **** Emacs Yes or No prompt
@@ -165,12 +205,12 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 
 #+begin_src emacs-lisp
   (use-package ansi-color
+    :hook (compilation-filter . lec/colorize-compilation-buffer)
     :config
     (defun lec/colorize-compilation-buffer ()
       "Colorize the compilation buffer on color escape codes."
       (when (eq major-mode 'compilation-mode)
-        (ansi-or-apply-on-region compilation-filter-start (point-max))))
-    :hook (compilation-filter . lec/colorize-compilation-buffer))
+	(ansi-or-apply-on-region compilation-filter-start (point-max)))))
 #+end_src
 
 ** Completion frameworks.
@@ -310,9 +350,10 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 #+begin_src emacs-lisp
   (use-package fira-code-mode
     :hook (prog-mode . fira-code-mode)
-    :config (fira-code-mode-set-font)
     :custom
-    (fira-code-mode-disabled-ligatures '("[]" "#{" "#(" "#_" "#_(" "x")))
+    (fira-code-mode-disabled-ligatures '("[]" "#{" "#(" "#_" "#_(" "x"))
+    :config
+    (fira-code-mode-set-font))
 #+end_src
 
 *** :sparkles: Emoji.
