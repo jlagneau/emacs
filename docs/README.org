@@ -158,6 +158,19 @@ Remember position in files.
     (global-whitespace-mode +1))
 #+end_src
 
+**** Save commands history.
+
+#+begin_src emacs-lisp
+  (use-package savehist
+    :custom
+    (history-length 30)
+    (savehist-autosave-interval 60)
+    (savehist-additional-variables '(search-ring regexp-search-ring))
+    (savehist-file (concat lec/cached-dir "history"))
+    :config
+    (savehist-mode +1))
+#+end_src
+
 **** Handle emacs backup files.
 
 Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid polluting the source files directories.
