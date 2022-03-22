@@ -90,6 +90,7 @@ issue warning and errors.
     (large-file-warning-threshold 100000000)
     (load-prefer-newer +1)
     (confirm-kill-processes nil)
+    (use-dialog-box nil)
     :config
     (scroll-bar-mode -1)
     (tool-bar-mode -1)
