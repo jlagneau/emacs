@@ -13,6 +13,34 @@ The directory structure is set up in [[../init.el][init.el]].
 - ~lec/doc-file~ is this actual file.
 - ~lec/tangled-doc-file~ is the output file for all tangled blocks from ~lec/doc-file~.
 
+*** Utilitiy functions.
+
+#+begin_src emacs-lisp
+  (defun lec/reload-configuration ()
+    "Reload emacs configuration."
+    (interactive)
+    (load-file user-init-file))
+
+  (defun lec/buffer-predicate (buffer)
+    "Do not allow *starred buffers* into the buffer predicate."
+    (if (string-match "^*" (buffer-name buffer)) nil t))
+  (set-frame-parameter nil 'buffer-predicate 'lec/buffer-predicate)
+#+end_src
+
+*TODO:* /Advice to temporarily fix deprecated macro signature in emacs >= 28. Remove this advice when the packages finally fix the changes./
+
+Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ function, requiring an extra parameter ~when~, a lot of packages
+issue warning and errors.
+
+#+begin_src emacs-lisp
+  (define-advice define-obsolete-function-alias (:filter-args (ll) fix-obsolete)
+  (let ((obsolete-name (pop ll))
+        (current-name (pop ll))
+        (when (if ll (pop ll) "1"))
+        (docstring (if ll (pop ll) nil)))
+    (list obsolete-name current-name when docstring)))
+#+end_src
+
 *** Packages managment.
 
 #+begin_src emacs-lisp
@@ -48,34 +76,6 @@ The directory structure is set up in [[../init.el][init.el]].
     :config
     (require 'benchmark-init-modes) ; explicitly required
     (add-hook 'after-init-hook #'benchmark-init/deactivate))
-#+end_src
-
-*** Utilitiy functions.
-
-#+begin_src emacs-lisp
-  (defun lec/reload-configuration ()
-    "Reload emacs configuration."
-    (interactive)
-    (load-file user-init-file))
-
-  (defun lec/buffer-predicate (buffer)
-    "Do not allow *starred buffers* into the buffer predicate."
-    (if (string-match "^*" (buffer-name buffer)) nil t))
-  (set-frame-parameter nil 'buffer-predicate 'lec/buffer-predicate)
-#+end_src
-
-*TODO:* /Advice to temporarily fix deprecated macro signature in emacs >= 28. Remove this advice when the packages finally fix the changes./
-
-Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ function, requiring an extra parameter ~when~, a lot of packages
-issue warning and errors.
-
-#+begin_src emacs-lisp
-  (define-advice define-obsolete-function-alias (:filter-args (ll) fix-obsolete)
-  (let ((obsolete-name (pop ll))
-        (current-name (pop ll))
-        (when (if ll (pop ll) "1"))
-        (docstring (if ll (pop ll) nil)))
-    (list obsolete-name current-name when docstring)))
 #+end_src
 
 *** Base emacs configuration.
