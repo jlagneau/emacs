@@ -384,7 +384,10 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 
 #+begin_src emacs-lisp
   (use-package fira-code-mode
-    :hook (prog-mode . fira-code-mode)
+    :defer 0.1
+    :if window-system
+    :hook ((org-mode . fira-code-mode)
+           (prog-mode . fira-code-mode))
     :custom
     (fira-code-mode-disabled-ligatures '("[]" "#{" "#(" "#_" "#_(" "x"))
     :config
