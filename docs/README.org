@@ -171,6 +171,19 @@ Remember position in files.
     (savehist-mode +1))
 #+end_src
 
+**** Automatically revert buffers for files modified outside emacs.
+
+Unless the buffer was modified inside emacs, always refresh buffers to use the latest file version. Also modify dired
+to automatically refresh its content too.
+
+#+begin_src emacs-lisp
+  (use-package autorevert
+    :custom
+    (global-auto-revert-non-file-buffers +1)
+    :config
+    (global-auto-revert-mode +1))
+#+end_src
+
 **** Handle emacs backup files.
 
 Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid polluting the source files directories.
