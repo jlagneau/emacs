@@ -509,9 +509,9 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (git-gutter:added-sign " ")
     (git-gutter:deleted-sign " ")
     :custom-face
-    (git-gutter:modified ((t (:background "#FFA500" :foreground "#FFA500"))))
-    (git-gutter:added ((t (:background "#00FF7F" :foreground "#00FF7F"))))
-    (git-gutter:deleted ((t (:background "#DC143C" :foreground "#DC143C")))))
+    (git-gutter:modified ((t (:background "#FD971F" :foreground "#FD971F"))))
+    (git-gutter:added ((t (:background "#B6E63E" :foreground "#B6E63E"))))
+    (git-gutter:deleted ((t (:background "#FB2874" :foreground "#FB2874")))))
 #+end_src
 
 *** PDF viewer.
