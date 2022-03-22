@@ -889,17 +889,21 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :defer t
     :hook ((rust-mode . lsp-deferred))
     :custom
-    (lsp-rust-server 'rust-analyzer "Language server of choice for rust.")
+    (lsp-rust-server 'rust-analyzer "Language server of choice for rust."))
+
+  (use-package dap-cpptools
+    :disabled
+    :after (dap-mode)
+    :demand
     :config
-    (require 'dap-cpptools)
     (dap-cpptools-setup)
     (dap-register-debug-template "Rust::GDB Run Configuration"
-                                 (list :type "gdb"
-                                       :request "launch"
-                                       :name "GDB::Run"
-                                       :gdbpath "rust-gdb"
-                                       :target nil
-                                       :cwd nil)))
+				 (list :type "gdb"
+				       :request "launch"
+				       :name "GDB::Run"
+				       :gdbpath "rust-gdb"
+				       :target nil
+				       :cwd nil)))
 
   (use-package cargo
       :after (rust-mode)
