@@ -489,8 +489,8 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :bind (("s-i" . blamer-show-commit-info))
     :custom
     (blamer-idle-time 0.5)
-    (blamer-min-offset 5)
-    (blamer-view 'overlay-right)
+    (blamer-min-offset 2)
+    (blamer-view 'overlay)
     (blamer-type 'both)
     (blamer-max-commit-message-length 50)
     (blamer-force-truncate-long-line t)
@@ -499,7 +499,6 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :custom-face
     (blamer-face ((t :foreground "#7a88cf"
                      :background nil
-                     :height 80
                      :italic t))))
 
   (use-package git-gutter
