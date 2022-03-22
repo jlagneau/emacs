@@ -11,8 +11,10 @@
 (scroll-bar-mode -1)
 (setq inhibit-startup-message t
       ring-bell-function 'ignore
+      use-dialog-box nil
       ad-redefinition-action 'accept)
 (setq-default frame-title-format '("%b"))
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Font.
 (set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 100)
