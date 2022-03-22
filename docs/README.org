@@ -523,7 +523,16 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :custom
     (pdf-view-display-size 'fit-page)
     :config
-    (pdf-tools-install))
+    (pdf-tools-install :no-query)
+    (pdf-loader-install :no-query))
+
+  (use-package pdf-view-restore
+    :after pdf-tools
+    :hook (pdf-view-mode . pdf-view-restore)
+    :custom
+    (pdf-view-restore-filename (concat lec/cached-dir "pdf-view-restore")))
+#+end_src
+
 #+end_src
 
 *** Syntax and spell checking.
