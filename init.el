@@ -10,7 +10,7 @@
 (defconst lec/cached-dir (concat user-emacs-directory ".cache/")
   "Directory for cached files.")
 
-(defconst lec/doc-dir (concat user-emacs-directory "doc/")
+(defconst lec/doc-dir (concat user-emacs-directory "docs/")
   "Directory where literate configuration in org-mode lies.")
 
 (defconst lec/doc-file (concat lec/doc-dir "README.org")
