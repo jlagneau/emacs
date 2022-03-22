@@ -124,6 +124,17 @@ Always insert the closing pair of parenthesis, brackets, curly brackets, and dou
     :config (electric-pair-mode +1))
 #+end_src
 
+Remember position in files.
+
+#+begin_src emacs-lisp
+  (use-package saveplace
+    :custom
+    (save-place-forget-unreadable-files t)
+    (save-place-file (concat lec/cached-dir "places"))
+    :config
+    (save-place-mode +1))
+#+end_src
+
 **** Matching elements (parenthesis, quotes, etc).
 
 [[https://github.com/Fanael/rainbow-delimiters][Rainbow-delimiters]] documentation.
