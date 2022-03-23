@@ -920,3 +920,11 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 
   (use-package toml-mode)
 #+end_src
+
+*** YAML.
+
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :mode (("\\.yml$" . yaml-mode)
+           ("\\.yaml$" . yaml-mode)))
+#+end_src
