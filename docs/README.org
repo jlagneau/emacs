@@ -889,6 +889,12 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 
   (use-package ac-php
     :after (php-mode company-mode helm))
+
+  (use-package composer)
+
+  (use-package dap-php
+    :disabled
+    :after (php-mode dap-mode))
 #+end_src
 
 *** Rust.
