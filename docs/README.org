@@ -845,7 +845,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (org-image-actual-width '(300))
     (org-startup-folded 'content)
     (org-startup-with-inline-images t)
-    (org-ellipsis "▾")
+    (org-ellipsis " ▾")
     (org-hide-emphasis-markers t)
     (org-support-shift-select 'always)
     :config
