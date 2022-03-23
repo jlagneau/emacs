@@ -471,7 +471,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :config
     (setq magit-todos-recursive t
           magit-todos-depth 10
-          magit-todos-exclude-globs '("*Pods*" ".git/" "*elpa*" "*var/lsp/*" "*straight*"))
+          magit-todos-exclude-globs '(".git/" ".cache/*" "vendor/*" "node_modules/*"))
     (custom-set-variables
      '(magit-todos-keywords (list "TODO" "FIXME"))))
 
