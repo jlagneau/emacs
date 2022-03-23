@@ -508,6 +508,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (git-gutter:modified-sign " ")
     (git-gutter:added-sign " ")
     (git-gutter:deleted-sign " ")
+    (git-gutter:update-interval 2)
     :custom-face
     (git-gutter:modified ((t (:background "#FD971F" :foreground "#FD971F"))))
     (git-gutter:added ((t (:background "#B6E63E" :foreground "#B6E63E"))))
