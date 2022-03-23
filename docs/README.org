@@ -29,8 +29,7 @@ The directory structure is set up in [[../init.el][init.el]].
 
 *TODO:* /Advice to temporarily fix deprecated macro signature in emacs >= 28. Remove this advice when the packages finally fix the changes./
 
-Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ function, requiring an extra parameter ~when~, a lot of packages
-issue warning and errors.
+Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ function, requiring an extra parameter ~when~, a lot of packages issue warning and errors.
 
 #+begin_src emacs-lisp
   (define-advice define-obsolete-function-alias (:filter-args (ll) fix-obsolete)
@@ -863,9 +862,11 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (text-mode . mixed-pitch-mode))
 
   (use-package visual-fill-column
-    :hook ((org-mode . visual-fill-column-mode))
+    :hook ((org-mode . visual-fill-column-mode)
+           (org-mode . visual-line-mode))
     :custom
     (visual-fill-column-width 120)
+    (visual-fill-column-fringes-outside-margins t)
     (visual-fill-column-center-text t))
 #+end_src
 
