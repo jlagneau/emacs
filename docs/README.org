@@ -463,7 +463,6 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 #+begin_src emacs-lisp
   (use-package magit
     :commands magit-status
-    :hook ((magit-post-refresh . git-gutter:update-all-windows))
     :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
   (use-package magit-todos
@@ -503,7 +502,8 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 
   (use-package git-gutter
     :hook ((prog-mode . git-gutter-mode)
-           (org-mode . git-gutter-mode))
+           (org-mode . git-gutter-mode)
+           (magit-post-refresh . git-gutter:update-all-windows))
     :custom
     (git-gutter:window-width 1)
     (git-gutter:modified-sign " ")
