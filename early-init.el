@@ -1,1 +1,1 @@
-etc/early-init.el
+etc/tangled-early-init.el

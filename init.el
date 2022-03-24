@@ -1,1 +1,1 @@
-etc/init.el
+etc/tangled-init.el
