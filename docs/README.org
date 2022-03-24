@@ -325,11 +325,6 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (helm-autoresize-mode 1)
     (helm-mode 1))
 
-  (use-package ag)
-
-  (use-package helm-ag
-    :after helm ag)
-
   (use-package helm-projectile
     :after helm projectile
     :bind (("C-c h p" . helm-projectile-switch-project)
