@@ -104,8 +104,11 @@ Highlight the current line.
 
 #+begin_src emacs-lisp
   (use-package hl-line
-    :config
-    (global-hl-line-mode +1))
+    :hook
+    ((after-init . global-hl-line-mode)
+     ((dashboard-mode vterm-mode) . (lambda () (setq-local global-hl-line-mode nil))))
+    :custom-face
+    (hl-line ((t (:background "#171819")))))
 #+end_src
 
 Reduce the performance impact of long lines in a file (eg. minified files).
@@ -852,6 +855,8 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (org-return-follows-link t)
     (org-special-ctrl-a/e t)
     :custom-face
+    (org-block-begin-line ((t (:foreground "#2D2E2E"))))
+    (org-block-end-line ((t (:foreground "#2D2E2E"))))
     (org-level-1 ((t (:inherit outline-1 :height 2.0))))
     (org-level-2 ((t (:inherit outline-2 :height 1.5))))
     (org-level-3 ((t (:inherit outline-3 :height 1.2))))
