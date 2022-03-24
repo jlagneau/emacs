@@ -13,6 +13,160 @@ The directory structure is set up in [[../init.el][init.el]].
 - ~lec/doc-file~ is this actual file.
 - ~lec/tangled-doc-file~ is the output file for all tangled blocks from ~lec/doc-file~.
 
+*** Early init file.
+
+Emacs 27.1 introduced early-init.el, which is run before init.el. Its main purpose here is to set GNU/Emacs with sane default to reflect the current configuration before loading everything. It prevent emacs to show in a non configured state.
+
+As per GNU/Emacs >= 28, native compilation can be enabled, resulting in ~*.eln~  files populating a directory at the root of the configuration directory. Redirect eln-cache files into an appropriate directory.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (when (fboundp 'startup-redirect-eln-cache)
+    (startup-redirect-eln-cache
+     (concat user-emacs-directory "var/eln-cache/")))
+#+end_src
+
+Disable the visual menus.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (setq inhibit-startup-message t
+        ring-bell-function 'ignore
+        use-dialog-box nil
+        ad-redefinition-action 'accept)
+#+end_src
+
+Set the frame name to the buffer name.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (setq-default frame-title-format '("%b"))
+#+end_src
+
+Simplify the ~yes~ / ~no~ answers with simples ~y~ or ~n~.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+Set the different fonts.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 100)
+  (set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font" :height 100)
+  (set-face-attribute 'variable-pitch nil :font "NotoSansDisplay Nerd Font" :height 100)
+#+end_src
+
+Change the colors for the background and foreground to respect the theme in use.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (add-to-list 'default-frame-alist '(foreground-color . "#d6d6d4"))
+  (add-to-list 'default-frame-alist '(background-color . "#1c1e1f"))
+#+end_src
+
+Display a temporary helpful message in the modeline for the user.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (set-face-foreground 'mode-line "#d6d6d4")
+  (set-face-background 'mode-line "#2d2e2e")
+  (set-face-attribute 'mode-line nil :box nil)
+  (set-face-attribute 'mode-line-inactive nil :box nil)
+  (setq mode-line-format "Initializing Litterate Emacs Configuration (lec)...")
+#+end_src
+
+Change the scratch buffer initial major mode to ~Fundamental~ to speedup the initialization.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (setq initial-major-mode 'fundamental-mode)
+  (setq initial-scratch-message nil)
+#+end_src
+
+Maximize the frame on startup.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+end_src
+
+Disable the garbage collection and inibit the package initialization.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (setq gc-cons-threshold most-positive-fixnum
+        gc-cons-percentage 0.6
+        native-comp-deferred-compilation t
+        warning-minimum-level :error
+        package-enable-at-startup nil
+        package-quickstart nil
+        load-prefer-newer noninteractive)
+#+end_src
+
+Set the locale and input method.
+
+#+begin_src emacs-lisp :tangle ../etc/early-init.el
+  (set-language-environment "UTF-8")
+  (setq default-input-method nil)
+#+end_src
+
+*** Init file.
+
+#+begin_src emacs-lisp :tangle ../etc/init.el
+  ;; For emacs < 27
+  (when (version< emacs-version "27")
+    (message "Emacs version < 27 do not support early-init.el. Load it manually.")
+    (load (concat
+           (file-name-directory load-file-name)
+           "early-init")
+          'noerror 'nomessage))
+
+  ;; Directory structure.
+  (defconst lec/etc-directory (concat user-emacs-directory "etc/")
+    "Directory where external configurations for packages goes.")
+
+  (defconst lec/doc-directory (concat user-emacs-directory "docs/")
+    "Directory where literate configuration in org-mode lies.")
+
+  (defconst lec/var-directory (concat user-emacs-directory "var/"))
+
+  (defconst lec/doc-file (concat lec/doc-directory "README.org")
+    "Documentation file for the configuration.")
+
+  (defconst lec/tangled-doc-file (concat lec/etc-directory "tangled-conf.el")
+    "File destination for tangled code blocks from the documentation.")
+
+  ;; Utility functions to handle documentation tangling.
+  (defun lec/tangle-documentation ()
+    "Tangle the org file given to cache directory after renaming it."
+    (interactive)
+    (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
+
+  (defun lec/--tangle-current-documentation ()
+    "If the the file currently edited is the documentation configuration, tangle
+  the code blocks."
+    (when (string-match lec/doc-file buffer-file-name)
+      (lec/tangle-documentation)))
+
+  (defun lec/add-tangle-headers ()
+     "Add header to tangled files."
+     (goto-char (point-min))
+     (insert ";;; -*- lexical-binding: t -*-\n")
+     (insert ";;; This file is automatically generated. Do not edit manually.\n")
+     (insert ";;; See `docs/README.org' for the original source.\n\n")
+     (save-buffer))
+  (add-hook 'org-babel-post-tangle-hook #'lec/add-tangle-headers)
+
+  ;; Tangle all Org configuration files if they do not exists,
+  ;; or when a configuration file is modified.
+  (unless (file-exists-p lec/tangled-doc-file)
+    (lec/tangle-documentation))
+  (add-hook 'after-save-hook #'lec/--tangle-current-documentation)
+
+  ;; Load compiled configuration files.
+  (load lec/tangled-doc-file)
+
+  ;; Customize file locations
+  (setq custom-file (concat lec/etc-directory "custom.el"))
+  (load custom-file 'noerror 'nomessage)
+#+end_src
+
 *** Utilitiy functions.
 
 #+begin_src emacs-lisp
@@ -43,12 +197,12 @@ Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ 
 *** Packages managment.
 
 #+begin_src emacs-lisp
-  (setq straight-base-dir lec/cached-dir)
+  (setq straight-base-dir lec/var-directory)
   (setq straight-repository-branch "develop")
   (setq comp-deferred-compilation-deny-list nil)
   (defvar bootstrap-version)
   (let ((bootstrap-file
-         (expand-file-name "straight/repos/straight.el/bootstrap.el" lec/cached-dir))
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" lec/var-directory))
         (bootstrap-version 5))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
@@ -75,6 +229,15 @@ Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ 
     :config
     (require 'benchmark-init-modes) ; explicitly required
     (add-hook 'after-init-hook #'benchmark-init/deactivate))
+#+end_src
+
+*** Avoid littering temporary files everywhere.
+
+#+begin_src emacs-lisp
+  (use-package no-littering
+    :custom
+    (no-littering-etc-directory lec/etc-directory)
+    (no-littering-var-directory lec/var-directory))
 #+end_src
 
 *** Base emacs configuration.
@@ -132,7 +295,6 @@ Remember position in files.
   (use-package saveplace
     :custom
     (save-place-forget-unreadable-files t)
-    (save-place-file (concat lec/cached-dir "places"))
     :config
     (save-place-mode +1))
 #+end_src
@@ -168,7 +330,6 @@ Remember position in files.
     (history-length 30)
     (savehist-autosave-interval 60)
     (savehist-additional-variables '(search-ring regexp-search-ring))
-    (savehist-file (concat lec/cached-dir "history"))
     :config
     (savehist-mode +1))
 #+end_src
@@ -191,8 +352,8 @@ to automatically refresh its content too.
 Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid polluting the source files directories.
 
 #+begin_src emacs-lisp
-  (let ((backup-dir (concat lec/cached-dir "backups"))
-        (auto-saves-dir (concat lec/cached-dir "auto-saves/")))
+  (let ((backup-dir (concat lec/var-directory "backups"))
+        (auto-saves-dir (concat lec/var-directory "auto-saves/")))
     (dolist (dir (list backup-dir auto-saves-dir))
       (when (not (file-directory-p dir))
         (make-directory dir t)))
@@ -218,11 +379,13 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 #+begin_src emacs-lisp
   (use-package recentf
     :custom
-    (recentf-save-file (concat lec/cached-dir "recentf"))
+    (recentf-save-file (concat lec/var-directory "recentf"))
     (recentf-max-saved-items 500)
     (recentf-max-menu-items 15)
     (recentf-auto-cleanup 'never)
     :config
+    (add-to-list 'recentf-exclude lec/var-directory)
+    (add-to-list 'recentf-exclude lec/etc-directory)
     (recentf-mode +1))
 #+end_src
 
@@ -397,9 +560,7 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 
 #+begin_src emacs-lisp
   (use-package emojify
-    :hook (after-init . global-emojify-mode)
-    :config
-    (setq emojify-emojis-dir (concat lec/cached-dir "emojify/")))
+    :hook (after-init . global-emojify-mode))
 #+end_src
 
 *** Icons.
@@ -451,8 +612,6 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 #+begin_src emacs-lisp
   (use-package projectile
     :config
-    (setq projectile-cache-file (concat lec/cached-dir "projectile.cache" )
-          projectile-known-projects-file (concat lec/cached-dir "projectile-known-projects.eld"))
     (projectile-mode +1))
 #+end_src
 
@@ -472,12 +631,6 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
           magit-todos-exclude-globs '(".git/" ".cache/*" "vendor/*" "node_modules/*"))
     (custom-set-variables
      '(magit-todos-keywords (list "TODO" "FIXME"))))
-
-  (use-package transient
-    :custom
-    (transient-history-file (concat lec/cached-dir "transient/history.el"))
-    (transient-levels-file  (concat lec/cached-dir "transient/levels.el"))
-    (transient-values-file  (concat lec/cached-dir "transient/values.el")))
 
   (use-package blamer
     :defer 0.1
@@ -535,9 +688,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 
   (use-package pdf-view-restore
     :after pdf-tools
-    :hook (pdf-view-mode . pdf-view-restore)
-    :custom
-    (pdf-view-restore-filename (concat lec/cached-dir "pdf-view-restore")))
+    :hook (pdf-view-mode . pdf-view-restore))
 #+end_src
 
 *** Terminal emulator
@@ -605,7 +756,6 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
               treemacs-no-png-images                   nil
               treemacs-no-delete-other-windows         t
               treemacs-project-follow-cleanup          nil
-              treemacs-persist-file                    (expand-file-name "treemacs-persist" lec/cached-dir)
               treemacs-position                        'left
               treemacs-read-string-input               'from-child-frame
               treemacs-recenter-distance               0.1
@@ -755,7 +905,6 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (lsp-enable-snippet t)
     (lsp-auto-guess-root t)
     (lsp-restart 'iteractive)
-    (lsp-session-file (concat lec/cached-dir "lsp-session-v1"))
     (lsp-auto-configure t)
     (lsp-document-sync-method)
     (lsp-auto-execute-action nil)
@@ -816,9 +965,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (tooltip-mode 1)
     ;; displays floating panel with debug buttons
     ;; requies emacs 26+
-    (dap-ui-controls-mode nil)
-    (dap-utils-extension-path (concat lec/cached-dir "dap-extensions"))
-    (dap-breakpoints-file (concat lec/cached-dir "dap-breakpoints")))
+    (dap-ui-controls-mode nil))
   ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 #+end_src
 
