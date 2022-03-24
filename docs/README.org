@@ -848,17 +848,20 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (org-startup-folded 'content)
     (org-startup-with-inline-images t)
     (org-ellipsis " ▾")
+    (org-pretty-entities t)
     (org-hide-emphasis-markers t)
     (org-support-shift-select 'always)
-    :config
-    (custom-set-faces
-     '(org-level-1 ((t (:inherit outline-1 :height 2.0))))
-     '(org-level-2 ((t (:inherit outline-2 :height 1.5))))
-     '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
-     '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
-     '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
-     )
-    )
+    (org-catch-invisible-edits 'show-and-error)
+    (org-src-fontify-natively t)
+    (org-src-tab-acts-natively t)
+    (org-return-follows-link t)
+    (org-special-ctrl-a/e t)
+    :custom-face
+    (org-level-1 ((t (:inherit outline-1 :height 2.0))))
+    (org-level-2 ((t (:inherit outline-2 :height 1.5))))
+    (org-level-3 ((t (:inherit outline-3 :height 1.2))))
+    (org-level-4 ((t (:inherit outline-4 :height 1.0))))
+    (org-level-5 ((t (:inherit outline-5 :height 1.0)))))
 
   (use-package org-bullets
     :after (org)
