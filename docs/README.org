@@ -309,9 +309,9 @@ Highlight the current line.
 
 #+begin_src emacs-lisp
   (use-package hl-line
-    :hook
-    ((after-init . global-hl-line-mode)
-     ((dashboard-mode vterm-mode) . (lambda () (setq-local global-hl-line-mode nil)))))
+    :hook ((text-mode . hl-line-mode)
+           (org-mode . hl-line-mode)
+           (prog-mode . hl-line-mode)))
 #+end_src
 
 Highlight undo and redos.
@@ -320,6 +320,7 @@ Highlight undo and redos.
   (use-package undo-hl
     :straight (undo-hl :type git :host github :repo "casouri/undo-hl")
     :hook ((text-mode . undo-hl-mode)
+           (org-mode . undo-hl-mode)
            (prog-mode . undo-hl-mode))
     :custom-face
     (undo-hl-insert ((t (:background "#B6E63E"))))
@@ -330,14 +331,17 @@ Reduce the performance impact of long lines in a file (eg. minified files).
 
 #+begin_src emacs-lisp
   (use-package so-long
-    :hook (after-init . global-so-long-mode))
+    :hook ((text-mode . so-long-mode)
+           (org-mode . so-long-mode)
+           (prog-mode . so-long-mode))
 #+end_src
 
 Always insert the closing pair of parenthesis, brackets, curly brackets, and double quotes.
 
 #+begin_src emacs-lisp
   (use-package elec-pair
-    :hook (after-init . electric-pair-mode))
+    :hook ((org-mode . electric-pair-mode)
+           (prog-mode . electric-pair-mode))
 #+end_src
 
 Remember position in files.
@@ -365,7 +369,8 @@ Remember position in files.
 
 #+begin_src emacs-lisp
   (use-package whitespace
-    :hook (after-init . global-whitespace-mode)
+    :hook ((org-mode . global-whitespace-mode)
+           (prog-mode . global-whitespace-mode))
     :custom
     (whitespace-style '(face trailing empty space-after-tab space-before-tab)))
 #+end_src
@@ -733,7 +738,9 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 *** Terminal emulator
 
 #+begin_src emacs-lisp
-  (use-package vterm)
+  (use-package vterm
+    :defer t
+    :commands (vterm))
 #+end_src
 
 *** Syntax and spell checking.
@@ -868,8 +875,9 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 
 #+begin_src emacs-lisp
   (use-package editorconfig
-    :hook ((prog-mode . editorconfig-mode)
-           (org-mode . editorconfig-mode)))
+    :hook ((text-mode . editorconfig-mode)
+           (org-mode . editorconfig-mode)
+           (prog-mode . editorconfig-mode)))
 #+end_src
 
 *** Dashboard buffer at launch.
