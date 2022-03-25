@@ -70,44 +70,38 @@
   (hl-line ((t (:background "#171819")))))
 
 (use-package so-long
-  :config
-  (global-so-long-mode +1))
+  :hook (after-init . global-so-long-mode))
 
 (use-package elec-pair
-  :config (electric-pair-mode +1))
+  :hook (after-init . electric-pair-mode))
 
 (use-package saveplace
+  :hook (after-init . save-place-mode)
   :custom
-  (save-place-forget-unreadable-files t)
-  :config
-  (save-place-mode +1))
+  (save-place-forget-unreadable-files t))
 
 (use-package rainbow-delimiters
   :hook ((prog-mode . rainbow-delimiters-mode)))
 
 (use-package paren
-  :config
-  (show-paren-mode +1))
+  :hook (after-init . show-paren-mode))
 
 (use-package whitespace
+  :hook (after-init . global-whitespace-mode)
   :custom
-  (whitespace-style '(face trailing empty space-after-tab space-before-tab))
-  :config
-  (global-whitespace-mode +1))
+  (whitespace-style '(face trailing empty space-after-tab space-before-tab)))
 
 (use-package savehist
+  :hook (after-init . savehist-mode)
   :custom
   (history-length 30)
   (savehist-autosave-interval 60)
-  (savehist-additional-variables '(search-ring regexp-search-ring))
-  :config
-  (savehist-mode +1))
+  (savehist-additional-variables '(search-ring regexp-search-ring)))
 
 (use-package autorevert
+  :hook (after-init . global-auto-revert-mode)
   :custom
-  (global-auto-revert-non-file-buffers +1)
-  :config
-  (global-auto-revert-mode +1))
+  (global-auto-revert-non-file-buffers t))
 
 (let ((backup-dir (concat lec/var-directory "backups"))
       (auto-saves-dir (concat lec/var-directory "auto-saves/")))
@@ -131,6 +125,7 @@
       kept-old-versions 2)    ; and some old ones, too
 
 (use-package recentf
+  :hook (after-init . recentf-mode)
   :custom
   (recentf-save-file (concat lec/var-directory "recentf"))
   (recentf-max-saved-items 500)
@@ -138,8 +133,7 @@
   (recentf-auto-cleanup 'never)
   :config
   (add-to-list 'recentf-exclude lec/var-directory)
-  (add-to-list 'recentf-exclude lec/etc-directory)
-  (recentf-mode +1))
+  (add-to-list 'recentf-exclude lec/etc-directory))
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -154,28 +148,27 @@
       (ansi-or-apply-on-region compilation-filter-start (point-max)))))
 
 (use-package company
-  :diminish company-mode
   :hook ((prog-mode . company-mode)
-         (org-mode . company-mode))
+	 (org-mode . company-mode))
   :config
   (setq company-tooltip-align-annotations t
-        company-minimum-prefix-length 1
-        company-async-timeout 10))
+	company-minimum-prefix-length 1
+	company-async-timeout 10)
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+	backend
+      (append (if (consp backend) backend (list backend))
+	      '(:with company-yasnippet))))
+
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
 
 (use-package company-posframe
+  :after (company)
   :config
-  (company-posframe-mode 1))
-
-(defvar company-mode/enable-yas t
-  "Enable yasnippet for all backends.")
-
-(defun company-mode/backend-with-yas (backend)
-  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-      backend
-    (append (if (consp backend) backend (list backend))
-            '(:with company-yasnippet))))
-
-(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+  (company-posframe-mode +1))
 
 (defun lec/helm-hide-minibuffer-maybe ()
     (when (with-helm-buffer helm-echo-input-in-header-line)
@@ -219,7 +212,7 @@
   (helm-mode 1))
 
 (use-package helm-projectile
-  :after helm projectile
+  :after (helm projectile)
   :bind (("C-c h p" . helm-projectile-switch-project)
          ("C-c h f" . helm-projectile-find-file))
   :config
@@ -227,10 +220,13 @@
 
 (use-package yasnippet
   :hook ((text-mode . yas-minor-mode)
-         (prog-mode . yas-minor-mode)))
+	 (org-mode . yas-minor-mode)
+	 (prog-mode . yas-minor-mode)))
 
 (use-package yasnippet-snippets
   :after (yasnippet))
+
+
 
 (use-package doom-themes
   :config
@@ -249,14 +245,12 @@
   :hook (after-init . doom-modeline-mode))
 
 (use-package fira-code-mode
-  :defer 0.1
   :if window-system
+  :init (fira-code-mode-set-font)
   :hook ((org-mode . fira-code-mode)
          (prog-mode . fira-code-mode))
   :custom
-  (fira-code-mode-disabled-ligatures '("[]" "#{" "#(" "#_" "#_(" "x"))
-  :config
-  (fira-code-mode-set-font))
+  (fira-code-mode-disabled-ligatures '("[]" "#{" "#(" "#_" "#_(" "x")))
 
 (use-package emojify
   :hook (after-init . global-emojify-mode))
@@ -275,13 +269,10 @@
          (text-mode . rainbow-mode)))
 
 (use-package gcmh
-  :defer 0.1
-  :config
-  (gcmh-mode 1))
+  :hook (after-init . gcmh-mode))
 
 (use-package projectile
-  :config
-  (projectile-mode +1))
+  :hook (after-init . projectile-mode))
 
 (use-package magit
   :commands magit-status
@@ -292,15 +283,14 @@
   :hook (magit-mode . magit-todos-mode)
   :config
   (setq magit-todos-recursive t
-        magit-todos-depth 10
-        magit-todos-exclude-globs '(".git/" ".cache/*" "vendor/*" "node_modules/*"))
+	magit-todos-depth 10
+	magit-todos-exclude-globs '(".git/" ".cache/*" "vendor/*" "node_modules/*"))
   (custom-set-variables
    '(magit-todos-keywords (list "TODO" "FIXME"))))
 
 (use-package blamer
-  :defer 0.1
   :hook ((prog-mode . blamer-mode)
-         (org-mode . blamer-mode))
+	 (org-mode . blamer-mode))
   :bind (("s-i" . blamer-show-commit-info))
   :custom
   (blamer-idle-time 0.5)
@@ -313,13 +303,13 @@
   (blamer-commit-formatter "● %s ● ")
   :custom-face
   (blamer-face ((t :foreground "#525254"
-                   :background nil
-                   :italic t))))
+		   :background nil
+		   :italic t))))
 
 (use-package git-gutter
   :hook ((prog-mode . git-gutter-mode)
-         (org-mode . git-gutter-mode)
-         (magit-post-refresh . git-gutter:update-all-windows))
+	 (org-mode . git-gutter-mode)
+	 (magit-post-refresh . git-gutter:update-all-windows))
   :custom
   (git-gutter:window-width 1)
   (git-gutter:modified-sign " ")
@@ -333,6 +323,7 @@
 
 (use-package git-gutter-fringe
   :if window-system
+  :after (git-gutter)
   :custom-face
   (git-gutter-fr:modified ((t (:background "#FD971F" :foreground "#FD971F"))))
   (git-gutter-fr:added ((t (:background "#B6E63E" :foreground "#B6E63E"))))
@@ -354,13 +345,12 @@
 (use-package vterm)
 
 (use-package flycheck
-  :defer t
+  :hook (after-init . global-flycheck-mode)
   :custom
-  (flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  :init
-  (global-flycheck-mode))
+  (flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (use-package flycheck-aspell
+  :after (flycheck)
   :custom
   (ispell-program-name (executable-find "hunspell"))
   (ispell-really-hunspell t)
@@ -475,8 +465,8 @@
 ;  :config (treemacs-set-scope-type 'Perspectives))
 
 (use-package editorconfig
-  :config
-  (editorconfig-mode 1))
+  :hook ((prog-mode . editorconfig-mode)
+         (org-mode . editorconfig-mode)))
 
 (use-package dashboard
   :config
@@ -497,22 +487,22 @@
   (dashboard-setup-startup-hook))
 
 (use-package which-key
-  :defer 0.1
+  :hook (after-init . which-key-mode)
   :config
   (setq which-key-popup-type 'minibuffer)
   ;; Allow C-h to trigger which-key before it is done automatically.
   (setq which-key-show-early-on-C-h t)
-  (setq which-key-idle-delay 1)
-  (which-key-mode))
+  (setq which-key-idle-delay 1))
 
 (use-package daemons
   :defer t)
 
 (use-package proced
+  :defer t
   :custom (proced-auto-update-flag t))
 
 (use-package lsp-mode
-  :defer 2
+  :defer t
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
@@ -554,21 +544,19 @@
          ;(XXX-mode . lsp-deferred)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
+  :commands (lsp lsp-deferred))
 
 ;; optionally
 (use-package lsp-ui
-  :defer t
+  :after (lsp)
   :commands lsp-ui-mode)
 
 ;; if you are helm user
 (use-package helm-lsp
-  :defer t
   :after (helm)
   :commands helm-lsp-workspace-symbol)
 
 (use-package lsp-treemacs
-  :defer t
   :after (treemacs)
   :commands lsp-treemacs-errors-list)
 
@@ -639,13 +627,13 @@
 (use-package php-mode
   :defer t
   :hook ((php-mode . lsp-deferred))
-  :config
-  (dap-setup-php))
+  :config (dap-setup-php))
 
 (use-package ac-php
   :after (php-mode company-mode helm))
 
-(use-package composer)
+(use-package composer
+  :after (php-mode))
 
 (use-package dap-php
   :disabled
@@ -655,7 +643,7 @@
   :defer t
   :hook ((rust-mode . lsp-deferred))
   :custom
-  (lsp-rust-server 'rust-analyzer "Language server of choice for rust."))
+  (lsp-rust-server 'rust-analyzer))
 
 (use-package dap-cpptools
   :disabled
@@ -675,7 +663,8 @@
     :after (rust-mode)
     :hook (rust-mode . cargo-minor-mode))
 
-(use-package toml-mode)
+(use-package toml-mode
+  :mode ("\\.toml$" . toml-mode))
 
 (use-package yaml-mode
   :mode (("\\.yml$" . yaml-mode)
