@@ -21,15 +21,15 @@ Emacs 27.1 introduced early-init.el, which is run before init.el. Its main purpo
 
 As per GNU/Emacs >= 28, native compilation can be enabled, resulting in ~*.eln~  files populating a directory at the root of the configuration directory. Redirect eln-cache files into an appropriate directory.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (when (fboundp 'startup-redirect-eln-cache)
     (startup-redirect-eln-cache
-     (concat user-emacs-directory "var/eln-cache/")))
+     (expand-file-name "var/eln-cache/" user-emacs-directory)))
 #+end_src
 
 Disable the visual menus, the bell, the dialog boxes and suppress ~ad-handle-definition~ warnings.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -41,19 +41,19 @@ Disable the visual menus, the bell, the dialog boxes and suppress ~ad-handle-def
 
 Set the frame (graphical window) name to the buffer name.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (setq-default frame-title-format '("%b"))
 #+end_src
 
 Simplify the ~yes~ / ~no~ answers with simples ~y~ or ~n~.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
 Set the different fonts.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 100)
   (set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font" :height 100)
   (set-face-attribute 'variable-pitch nil :font "NotoSansDisplay Nerd Font" :height 100)
@@ -61,14 +61,14 @@ Set the different fonts.
 
 Change the colors for the background and foreground to respect the theme in use.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (add-to-list 'default-frame-alist '(foreground-color . "#d6d6d4"))
   (add-to-list 'default-frame-alist '(background-color . "#1c1e1f"))
 #+end_src
 
 Display a temporary helpful message in the modeline for the user.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (set-face-foreground 'mode-line "#d6d6d4")
   (set-face-background 'mode-line "#2d2e2e")
   (set-face-attribute 'mode-line nil :box nil)
@@ -78,20 +78,20 @@ Display a temporary helpful message in the modeline for the user.
 
 Change the scratch buffer initial major mode to ~Fundamental~ to speedup the initialization.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (setq initial-major-mode 'fundamental-mode)
   (setq initial-scratch-message nil)
 #+end_src
 
 Maximize the frame on startup.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+end_src
 
 Disable the garbage collection and inibit the package initialization.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (setq gc-cons-threshold most-positive-fixnum
         gc-cons-percentage 0.6
         native-comp-deferred-compilation t
@@ -103,47 +103,62 @@ Disable the garbage collection and inibit the package initialization.
 
 Set the locale and input method.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-early-init.el
+#+begin_src emacs-lisp :tangle ../early-init.el
   (set-language-environment "UTF-8")
   (setq default-input-method nil)
 #+end_src
 
 **** init.el file.
 
-#+begin_src emacs-lisp :tangle ../etc/tangled-init.el
-  ;; For emacs < 27
+If emacs is not at least in version 27, manually load the early-init file.
+
+#+begin_src emacs-lisp :tangle ../init.el
   (when (version< emacs-version "27")
     (message "Emacs version < 27 do not support early-init.el. Load it manually.")
     (load (concat
            (file-name-directory load-file-name)
            "early-init")
           'noerror 'nomessage))
+#+end_src
 
-  ;; Directory structure.
-  (defconst lec/etc-directory (concat user-emacs-directory "etc/")
+Helper to concatenate path no matter if the entries end with a directory separator or not.
+
+#+begin_src emacs-lisp :tangle ../init.el
+  (if (featurep 'cl-lib)
+      (require 'cl-lib)
+    (require 'cl))
+
+  (defun concat-path (&rest parts)
+    (cl-reduce (lambda (a b) (expand-file-name b a)) parts))
+#+end_src
+
+Directory structure and documentation tangling related variables.
+
+#+begin_src emacs-lisp :tangle ../init.el
+  (defconst lec/etc-directory (concat-path user-emacs-directory "etc")
     "Directory where external configurations for packages goes.")
 
-  (defconst lec/doc-directory (concat user-emacs-directory "docs/")
+  (defconst lec/doc-directory (concat-path user-emacs-directory "docs")
     "Directory where literate configuration in org-mode lies.")
 
-  (defconst lec/var-directory (concat user-emacs-directory "var/"))
+  (defconst lec/var-directory (concat-path user-emacs-directory "var")
+    "Directory where temporary files and packages resources goes.")
 
-  (defconst lec/doc-file (concat lec/doc-directory "README.org")
+  (defconst lec/doc-file (concat-path lec/doc-directory "README.org")
     "Documentation file for the configuration.")
 
-  (defconst lec/tangled-doc-file (concat lec/etc-directory "tangled-conf.el")
+  (defconst lec/tangled-doc-file (concat-path lec/var-directory "tangled-conf.el")
     "File destination for tangled code blocks from the documentation.")
+#+end_src
 
-  ;; Utility functions to handle documentation tangling.
+Utilities functions related to the tangling of the files.
+
+#+begin_src emacs-lisp :tangle ../init.el
   (defun lec/tangle-documentation ()
     "Tangle the org file given to cache directory after renaming it."
     (interactive)
+    (require 'org)
     (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
-
-  (defun lec/reload-configuration ()
-    "Reload emacs configuration."
-    (interactive)
-    (load-file user-init-file))
 
   (defun lec/--tangle-current-documentation ()
     "If the the file currently edited is the documentation configuration, tangle
@@ -152,37 +167,58 @@ Set the locale and input method.
       (lec/tangle-documentation)))
 
   (defun lec/--add-tangle-headers ()
-     "Add header to tangled files."
-     (goto-char (point-min))
-     (insert ";;; -*- lexical-binding: t -*-\n")
-     (insert ";;; This file is automatically generated. Do not edit manually.\n")
-     (insert ";;; See `docs/README.org' for the original source.\n\n")
-     (save-buffer))
+    "Add headers at the start of tangled files specifying they should not be
+  modified manually."
+    (goto-char (point-min))
+    (insert ";;; -*- lexical-binding: t -*-\n")
+    (insert ";;; This file is automatically generated. Do not edit manually.\n")
+    (insert ";;; See `docs/README.org' for the original source.\n\n")
+    (save-buffer))
+#+end_src
 
-  (defun lec/--buffer-predicate (buffer)
-    "Do not allow *starred buffers* into the buffer predicate."
-    (if (string-match "^*" (buffer-name buffer)) nil t))
+If the tangled configuration does not exists, tangle it.
 
-  ;; Tangle all Org configuration files if they do not exists,
-  ;; or when a configuration file is modified.
+#+begin_src emacs-lisp :tangle ../init.el
   (unless (file-exists-p lec/tangled-doc-file)
     (lec/tangle-documentation))
+#+end_src
 
+Hooks to tangle configuration when the documentation is modified. Also add headers to specify that these files should not be modified directly as they get rewritten each time the documentation is modified.
+
+#+begin_src emacs-lisp :tangle ../init.el
   (add-hook 'after-save-hook #'lec/--tangle-current-documentation)
   (add-hook 'org-babel-post-tangle-hook #'lec/--add-tangle-headers)
+#+end_src
 
-  ;; Load compiled configuration files.
+Load the tangled configuration.
+
+#+begin_src emacs-lisp :tangle ../init.el
   (load lec/tangled-doc-file)
+#+end_src
 
-  ;; Customize file locations
-  (setq custom-file (concat lec/etc-directory "custom.el"))
+And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rewrite this file.
+
+#+begin_src emacs-lisp :tangle ../init.el
+  (setq-default custom-file (concat-path lec/etc-directory "custom.el"))
   (load custom-file 'noerror 'nomessage)
 #+end_src
 
-*** Utilitiy functions.
+*** Utility functions for GNU/Emacs configuration.
 
 #+begin_src emacs-lisp
-  (set-frame-parameter nil 'buffer-predicate 'lec/--buffer-predicate)
+  (defun lec/reload-configuration ()
+    "Reload emacs configuration."
+    (interactive)
+    (load-file user-init-file))
+
+  (defun lec/--bufferp (buffer)
+    "Predicate that return nil if the buffer-name start with one of the things
+  to exclude, else t."
+    (cond ((string-match "^*" (buffer-name buffer)) nil)
+          ((string-match "^magit" (buffer-name buffer)) nil)
+          (t t)))
+
+  (set-frame-parameter nil 'buffer-predicate 'lec/--bufferp)
 #+end_src
 
 *TODO:* /Advice to temporarily fix deprecated macro signature in emacs >= 28. Remove this advice when the packages finally fix the changes./
@@ -275,9 +311,19 @@ Highlight the current line.
   (use-package hl-line
     :hook
     ((after-init . global-hl-line-mode)
-     ((dashboard-mode vterm-mode) . (lambda () (setq-local global-hl-line-mode nil))))
+     ((dashboard-mode vterm-mode) . (lambda () (setq-local global-hl-line-mode nil)))))
+#+end_src
+
+Highlight undo and redos.
+
+#+begin_src emacs-lisp
+  (use-package undo-hl
+    :straight (undo-hl :type git :host github :repo "casouri/undo-hl")
+    :hook ((text-mode . undo-hl-mode)
+           (prog-mode . undo-hl-mode))
     :custom-face
-    (hl-line ((t (:background "#171819")))))
+    (undo-hl-insert ((t (:background "#B6E63E"))))
+    (undo-hl-delete ((t (:background "#FB2874")))))
 #+end_src
 
 Reduce the performance impact of long lines in a file (eg. minified files).
@@ -352,14 +398,14 @@ to automatically refresh its content too.
 Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid polluting the source files directories.
 
 #+begin_src emacs-lisp
-  (let ((backup-dir (concat lec/var-directory "backups"))
-        (auto-saves-dir (concat lec/var-directory "auto-saves/")))
+  (let ((backup-dir (concat-path lec/var-directory "backups"))
+        (auto-saves-dir (concat-path lec/var-directory "auto-saves")))
     (dolist (dir (list backup-dir auto-saves-dir))
       (when (not (file-directory-p dir))
         (make-directory dir t)))
     (setq backup-directory-alist `(("." . ,backup-dir))
           auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
-          auto-save-list-file-prefix (concat auto-saves-dir ".saves-")
+          auto-save-list-file-prefix (concat-path auto-saves-dir ".saves-")
           tramp-backup-directory-alist `((".*" . ,backup-dir))
           tramp-auto-save-directory auto-saves-dir))
 
@@ -380,7 +426,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
   (use-package recentf
     :hook (after-init . recentf-mode)
     :custom
-    (recentf-save-file (concat lec/var-directory "recentf"))
+    (recentf-save-file (concat-path lec/var-directory "recentf"))
     (recentf-max-saved-items 500)
     (recentf-max-menu-items 15)
     (recentf-auto-cleanup 'never)
@@ -506,9 +552,6 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 
   (use-package yasnippet-snippets
     :after (yasnippet))
-#+end_src
-
-#+begin_src emacs-lisp
 #+end_src
 
 ** Appearance.
@@ -842,7 +885,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
           dashboard-navigator-buttons
           `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
              (,nil "Update packages" "Update all packages" (lambda (&rest _) (straight-pull-all)) warning)
-             (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (concat user-emacs-directory "init.el"))) warning))
+             (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (concat-path user-emacs-directory "init.el"))) warning))
             ((,nil "System services" "Manage services" (lambda (&rest _) (daemons)) error)
              (,nil "System processes" "Manage processes" (lambda (&rest _) (proced)) error)))
           dashboard-show-shortcuts nil
@@ -1049,26 +1092,29 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :defer t
     :hook ((rust-mode . lsp-deferred))
     :custom
-    (lsp-rust-server 'rust-analyzer))
-
-  (use-package dap-cpptools
-    :disabled
-    :after (dap-mode)
-    :demand
+    (lsp-rust-server 'rust-analyzer)
     :config
-    (dap-cpptools-setup)
-    (dap-register-debug-template "Rust::GDB Run Configuration"
-				 (list :type "gdb"
-				       :request "launch"
-				       :name "GDB::Run"
-				       :gdbpath "rust-gdb"
-				       :target nil
-				       :cwd nil)))
+    (use-package dap-cpptools
+      :disabled
+      :demand
+      :config
+      (dap-cpptools-setup)
+      (dap-register-debug-template "Rust::GDB Run Configuration"
+                                   (list :type "gdb"
+                                         :request "launch"
+                                         :name "GDB::Run"
+                                         :gdbpath "rust-gdb"
+                                         :target nil
+                                         :cwd nil))))
 
   (use-package cargo
       :after (rust-mode)
       :hook (rust-mode . cargo-minor-mode))
+#+end_src
 
+*** TOML.
+
+#+begin_src emacs-lisp
   (use-package toml-mode
     :mode ("\\.toml$" . toml-mode))
 #+end_src
