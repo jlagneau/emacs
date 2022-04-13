@@ -73,7 +73,7 @@ Display a temporary helpful message in the modeline for the user.
   (set-face-background 'mode-line "#2d2e2e")
   (set-face-attribute 'mode-line nil :box nil)
   (set-face-attribute 'mode-line-inactive nil :box nil)
-  (setq mode-line-format "Initializing Litterate Emacs Configuration (lec)...")
+  (setq mode-line-format nil)
 #+end_src
 
 Change the scratch buffer initial major mode to ~Fundamental~ to speedup the initialization.
@@ -124,10 +124,6 @@ If emacs is not at least in version 27, manually load the early-init file.
 Helper to concatenate path no matter if the entries end with a directory separator or not.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (if (featurep 'cl-lib)
-      (require 'cl-lib)
-    (require 'cl))
-
   (defun concat-path (&rest parts)
     (cl-reduce (lambda (a b) (expand-file-name b a)) parts))
 #+end_src
@@ -596,7 +592,7 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
     :hook ((org-mode . fira-code-mode)
            (prog-mode . fira-code-mode))
     :custom
-    (fira-code-mode-disabled-ligatures '("[]" "#{" "#(" "#_" "#_(" "x")))
+    (fira-code-mode-disabled-ligatures '("[]" "</" "/>" "x")))
 #+end_src
 
 *** :sparkles: Emoji.
@@ -1031,6 +1027,13 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
            (c++-mode . lsp-deferred)))
 #+end_src
 
+*** Javascript.
+
+#+begin_src emacs-lisp
+  (use-package js2-mode
+    :defer t)
+#+end_src
+
 *** Org.
 
 [[https://orgmode.org/][Org-mode]] documentation.
@@ -1071,7 +1074,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
   (use-package mixed-pitch
     :hook
     ;; If you want it in all text modes:
-    (text-mode . mixed-pitch-mode))
+    (org-mode . mixed-pitch-mode))
 
   (use-package visual-fill-column
     :hook ((org-mode . visual-fill-column-mode)
@@ -1133,6 +1136,31 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 #+begin_src emacs-lisp
   (use-package toml-mode
     :mode ("\\.toml$" . toml-mode))
+#+end_src
+
+*** Typescript.
+
+#+begin_src emacs-lisp
+  (use-package typescript-mode
+    :defer t
+    :hook (typescript-mode . lsp-deferred))
+#+end_src
+
+*** Web.
+
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :mode ("\\.html?$" "\\.html\\.twig$")
+    :custom
+    (web-mode-markup-indent-offset 2)
+    (web-mode-code-indent-offset 2)
+    (web-mode-css-indent-offset 2))
+
+  (define-derived-mode vue-mode web-mode "vue"
+    "Derive web-mode into vue-mode."
+    (add-to-list 'auto-mode-alist '("\\.vue$" . vue-mode)))
+
+  (add-hook 'vue-mode-hook #'lsp-deferred)
 #+end_src
 
 *** YAML.

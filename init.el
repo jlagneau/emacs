@@ -9,10 +9,6 @@
          "early-init")
         'noerror 'nomessage))
 
-(if (featurep 'cl-lib)
-    (require 'cl-lib)
-  (require 'cl))
-
 (defun concat-path (&rest parts)
   (cl-reduce (lambda (a b) (expand-file-name b a)) parts))
 

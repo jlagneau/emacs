@@ -29,7 +29,7 @@
 (set-face-background 'mode-line "#2d2e2e")
 (set-face-attribute 'mode-line nil :box nil)
 (set-face-attribute 'mode-line-inactive nil :box nil)
-(setq mode-line-format "Initializing Litterate Emacs Configuration (lec)...")
+(setq mode-line-format nil)
 
 (setq initial-major-mode 'fundamental-mode)
 (setq initial-scratch-message nil)
