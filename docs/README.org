@@ -1041,6 +1041,12 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
   (use-package cmake-mode)
 #+end_src
 
+*** Fish
+
+#+begin_src emacs-lisp
+  (use-package fish-mode)
+#+end_src
+
 *** Javascript.
 
 #+begin_src emacs-lisp
