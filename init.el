@@ -9,22 +9,23 @@
          "early-init")
         'noerror 'nomessage))
 
-(defun concat-path (&rest parts)
+(defun lec/concat-path (&rest parts)
+"Concatenate two or more path together."
   (cl-reduce (lambda (a b) (expand-file-name b a)) parts))
 
-(defconst lec/etc-directory (concat-path user-emacs-directory "etc")
+(defconst lec/etc-directory (lec/concat-path user-emacs-directory "etc")
   "Directory where external configurations for packages goes.")
 
-(defconst lec/doc-directory (concat-path user-emacs-directory "docs")
+(defconst lec/doc-directory (lec/concat-path user-emacs-directory "docs")
   "Directory where literate configuration in org-mode lies.")
 
-(defconst lec/var-directory (concat-path user-emacs-directory "var")
+(defconst lec/var-directory (lec/concat-path user-emacs-directory "var")
   "Directory where temporary files and packages resources goes.")
 
-(defconst lec/doc-file (concat-path lec/doc-directory "README.org")
+(defconst lec/doc-file (lec/concat-path lec/doc-directory "README.org")
   "Documentation file for the configuration.")
 
-(defconst lec/tangled-doc-file (concat-path lec/var-directory "tangled-conf.el")
+(defconst lec/tangled-doc-file (lec/concat-path lec/var-directory "tangled-conf.el")
   "File destination for tangled code blocks from the documentation.")
 
 (setq straight-base-dir lec/var-directory)
@@ -48,6 +49,7 @@
 (setq use-package-always-ensure t)
 (setq straight-use-package-by-default t)
 
+;; Install and / or load the latest org-mode before attempting to tangle anything.
 (use-package org)
 
 (defun lec/tangle-documentation ()
@@ -78,5 +80,5 @@ modified manually."
 
 (load lec/tangled-doc-file)
 
-(setq-default custom-file (concat-path lec/etc-directory "custom.el"))
+(setq-default custom-file (lec/concat-path lec/etc-directory "custom.el"))
 (load custom-file 'noerror 'nomessage)

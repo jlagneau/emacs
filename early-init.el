@@ -11,6 +11,7 @@
 (scroll-bar-mode -1)
 (setq package-enable-at-startup nil)
 (setq package-quickstart nil)
+
 (setq inhibit-startup-message t
       package-enable-at-startup nil
       package-enable-at-startup nil
@@ -37,8 +38,6 @@
 
 (setq initial-major-mode 'fundamental-mode)
 (setq initial-scratch-message nil)
-
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6

@@ -26,7 +26,7 @@ As per GNU/Emacs >= 28, native compilation can be enabled, resulting in ~*.eln~ 
      (expand-file-name "var/eln-cache/" user-emacs-directory)))
 #+end_src
 
-Disable the visual menus, the start-up message, inibit package initialization, disable the bell, the dialog boxes and suppress ~ad-handle-definition~ warnings.
+Disable the visual menus and inibit package initialization.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
   (menu-bar-mode -1)
@@ -34,6 +34,11 @@ Disable the visual menus, the start-up message, inibit package initialization, d
   (scroll-bar-mode -1)
   (setq package-enable-at-startup nil)
   (setq package-quickstart nil)
+#+end_src
+
+Disable the start-up message, the bell, the dialog boxes and suppress ~ad-handle-definition~ warnings.
+
+#+begin_src emacs-lisp :tangle ../early-init.el
   (setq inhibit-startup-message t
         package-enable-at-startup nil
         package-enable-at-startup nil
@@ -42,7 +47,7 @@ Disable the visual menus, the start-up message, inibit package initialization, d
         ad-redefinition-action 'accept)
 #+end_src
 
-Set the frame (graphical window) name to the buffer name.
+Set the frame title to the buffer name.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
   (setq-default frame-title-format '("%b"))
@@ -86,12 +91,6 @@ Change the scratch buffer initial major mode to ~Fundamental~ to speedup the ini
   (setq initial-scratch-message nil)
 #+end_src
 
-Maximize the frame on startup.
-
-#+begin_src emacs-lisp :tangle ../early-init.el
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
-#+end_src
-
 Disable the garbage collection and set the minimum warning level.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
@@ -122,33 +121,34 @@ If emacs is not at least in version 27, manually load the early-init file.
           'noerror 'nomessage))
 #+end_src
 
-Helper to concatenate path no matter if the entries end with a directory separator or not.
+Create a helper function to concatenate path no matter if the entries end with a directory separator or not.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (defun concat-path (&rest parts)
+  (defun lec/concat-path (&rest parts)
+  "Concatenate two or more path together."
     (cl-reduce (lambda (a b) (expand-file-name b a)) parts))
 #+end_src
 
-Directory structure and documentation tangling related variables.
+Declare and initialize all the variables for the directory structure and important files used in the literate configuration.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (defconst lec/etc-directory (concat-path user-emacs-directory "etc")
+  (defconst lec/etc-directory (lec/concat-path user-emacs-directory "etc")
     "Directory where external configurations for packages goes.")
 
-  (defconst lec/doc-directory (concat-path user-emacs-directory "docs")
+  (defconst lec/doc-directory (lec/concat-path user-emacs-directory "docs")
     "Directory where literate configuration in org-mode lies.")
 
-  (defconst lec/var-directory (concat-path user-emacs-directory "var")
+  (defconst lec/var-directory (lec/concat-path user-emacs-directory "var")
     "Directory where temporary files and packages resources goes.")
 
-  (defconst lec/doc-file (concat-path lec/doc-directory "README.org")
+  (defconst lec/doc-file (lec/concat-path lec/doc-directory "README.org")
     "Documentation file for the configuration.")
 
-  (defconst lec/tangled-doc-file (concat-path lec/var-directory "tangled-conf.el")
+  (defconst lec/tangled-doc-file (lec/concat-path lec/var-directory "tangled-conf.el")
     "File destination for tangled code blocks from the documentation.")
 #+end_src
 
-Packages managment.
+Install straight.el package manager and configure ~use-package~ to handle the installation and lazy loading of the packages.
 
 #+begin_src emacs-lisp :tangle ../init.el
   (setq straight-base-dir lec/var-directory)
@@ -176,6 +176,7 @@ Packages managment.
 Install latest org mode before using it.
 
 #+begin_src emacs-lisp :tangle ../init.el
+  ;; Install and / or load the latest org-mode before attempting to tangle anything.
   (use-package org)
 #+end_src
 
@@ -226,7 +227,7 @@ Load the tangled configuration.
 And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rewrite this file.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (setq-default custom-file (concat-path lec/etc-directory "custom.el"))
+  (setq-default custom-file (lec/concat-path lec/etc-directory "custom.el"))
   (load custom-file 'noerror 'nomessage)
 #+end_src
 
@@ -246,19 +247,6 @@ And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rew
           (t t)))
 
   (set-frame-parameter nil 'buffer-predicate 'lec/--bufferp)
-#+end_src
-
-*TODO:* /Advice to temporarily fix deprecated macro signature in emacs >= 28. Remove this advice when the packages finally fix the changes./
-
-Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ function, requiring an extra parameter ~when~, a lot of packages issue warning and errors.
-
-#+begin_src emacs-lisp
-  (define-advice define-obsolete-function-alias (:filter-args (ll) fix-obsolete)
-    (let ((obsolete-name (pop ll))
-          (current-name (pop ll))
-          (when (if ll (pop ll) "1"))
-          (docstring (if ll (pop ll) nil)))
-      (list obsolete-name current-name when docstring)))
 #+end_src
 
 ** Emacs defaults.
@@ -282,7 +270,6 @@ Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ 
 #+end_src
 
 *** Base emacs configuration.
-
 **** Miscellaneous defaults.
 
 #+begin_src emacs-lisp
@@ -400,14 +387,14 @@ to automatically refresh its content too.
 Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid polluting the source files directories.
 
 #+begin_src emacs-lisp
-  (let ((backup-dir (concat-path lec/var-directory "backups"))
-        (auto-saves-dir (concat-path lec/var-directory "auto-saves")))
+  (let ((backup-dir (lec/concat-path lec/var-directory "backups"))
+        (auto-saves-dir (lec/concat-path lec/var-directory "auto-saves")))
     (dolist (dir (list backup-dir auto-saves-dir))
       (when (not (file-directory-p dir))
         (make-directory dir t)))
     (setq backup-directory-alist `(("." . ,backup-dir))
           auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
-          auto-save-list-file-prefix (concat-path auto-saves-dir ".saves-")
+          auto-save-list-file-prefix (lec/concat-path auto-saves-dir ".saves-")
           tramp-backup-directory-alist `((".*" . ,backup-dir))
           tramp-auto-save-directory auto-saves-dir))
 
@@ -428,7 +415,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
   (use-package recentf
     :hook (after-init . recentf-mode)
     :custom
-    (recentf-save-file (concat-path lec/var-directory "recentf"))
+    (recentf-save-file (lec/concat-path lec/var-directory "recentf"))
     (recentf-max-saved-items 500)
     (recentf-max-menu-items 15)
     (recentf-auto-cleanup 'never)
@@ -441,12 +428,6 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 
 #+begin_src emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)
-#+end_src
-
-**** Start GNU/Emacs maximized.
-
-#+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+end_src
 
 **** Allow ANSI color codes in the compilation buffer.
@@ -658,7 +639,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
           dashboard-navigator-buttons
           `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
              (,nil "Update packages" "Update all packages" (lambda (&rest _) (straight-pull-all)) warning)
-             (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (concat-path user-emacs-directory "init.el"))) warning))
+             (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (lec/concat-path user-emacs-directory "init.el"))) warning))
             ((,nil "System services" "Manage services" (lambda (&rest _) (daemons)) error)
              (,nil "System processes" "Manage processes" (lambda (&rest _) (proced)) error)))
           dashboard-show-shortcuts nil
@@ -876,7 +857,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 *** Undo tree.
 
 #+begin_src emacs-lisp
-  (defvar lec/--undo-history-directory (concat-path lec/var-directory "undos/")
+  (defvar lec/--undo-history-directory (lec/concat-path lec/var-directory "undos/")
     "Directory to save undo history files.")
 
   (unless (file-exists-p lec/--undo-history-directory)
@@ -930,23 +911,18 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 	   (org-mode . git-gutter-mode)
 	   (magit-post-refresh . git-gutter:update-all-windows))
     :custom
-    (git-gutter:window-width 1)
-    (git-gutter:modified-sign " ")
-    (git-gutter:added-sign " ")
-    (git-gutter:deleted-sign " ")
-    (git-gutter:update-interval 2)
-    :custom-face
-    (git-gutter:modified ((t (:background "#FD971F" :foreground "#FD971F"))))
-    (git-gutter:added ((t (:background "#B6E63E" :foreground "#B6E63E"))))
-    (git-gutter:deleted ((t (:background "#FB2874" :foreground "#FB2874")))))
+    (git-gutter:update-interval 2))
 
   (use-package git-gutter-fringe
     :if window-system
     :after (git-gutter)
-    :custom-face
-    (git-gutter-fr:modified ((t (:background "#FD971F" :foreground "#FD971F"))))
-    (git-gutter-fr:added ((t (:background "#B6E63E" :foreground "#B6E63E"))))
-    (git-gutter-fr:deleted ((t (:background "#FB2874" :foreground "#FB2874")))))
+    :config
+    (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+    (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+    (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom)
+    (set-face-foreground 'git-gutter-fr:modified "#FD971F")
+    (set-face-foreground 'git-gutter-fr:added    "#B6E63E")
+    (set-face-foreground 'git-gutter-fr:deleted  "#FB2874"))
 #+end_src
 
 ** Language server.
@@ -959,6 +935,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (setq lsp-keymap-prefix "C-c l")
     :custom
     (lsp-log-io nil)
+    (lsp-headerline-breadcrumb-enable nil)
     (lsp-print-performance nil)
     (lsp-report-if-no-buffer nil)
     (lsp-keep-workspace-alive nil)
@@ -1039,13 +1016,15 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (lsp-clangd-version "20.1.7")
     (lsp-clients-clangd-args '("--experimental-modules-support" "--clang-tidy")))
 
-  (use-package cmake-mode)
+  (use-package cmake-mode
+    :defer t)
 #+end_src
 
 *** Fish
 
 #+begin_src emacs-lisp
-  (use-package fish-mode)
+  (use-package fish-mode
+    :defer t)
 #+end_src
 
 *** Javascript.
