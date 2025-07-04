@@ -8,7 +8,6 @@ This is a really /opinionated/ configuration of GNU/Emacs.
 
 The directory structure is set up in [[../init.el][init.el]].
 
-- ~lec/cached-dir~ is the cached directory.
 - ~lec/doc-dir~ is the directory where the documentation goes.
 - ~lec/doc-file~ is this actual file.
 - ~lec/tangled-doc-file~ is the output file for all tangled blocks from ~lec/doc-file~.
@@ -27,13 +26,17 @@ As per GNU/Emacs >= 28, native compilation can be enabled, resulting in ~*.eln~ 
      (expand-file-name "var/eln-cache/" user-emacs-directory)))
 #+end_src
 
-Disable the visual menus, the bell, the dialog boxes and suppress ~ad-handle-definition~ warnings.
+Disable the visual menus, the start-up message, inibit package initialization, disable the bell, the dialog boxes and suppress ~ad-handle-definition~ warnings.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
+  (setq package-enable-at-startup nil)
+  (setq package-quickstart nil)
   (setq inhibit-startup-message t
+        package-enable-at-startup nil
+        package-enable-at-startup nil
         ring-bell-function 'ignore
         use-dialog-box nil
         ad-redefinition-action 'accept)
@@ -89,15 +92,13 @@ Maximize the frame on startup.
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+end_src
 
-Disable the garbage collection and inibit the package initialization.
+Disable the garbage collection and set the minimum warning level.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
   (setq gc-cons-threshold most-positive-fixnum
         gc-cons-percentage 0.6
-        native-comp-deferred-compilation t
+        native-comp-jit-compilation t
         warning-minimum-level :error
-        package-enable-at-startup nil
-        package-quickstart nil
         load-prefer-newer noninteractive)
 #+end_src
 
@@ -147,13 +148,43 @@ Directory structure and documentation tangling related variables.
     "File destination for tangled code blocks from the documentation.")
 #+end_src
 
+Packages managment.
+
+#+begin_src emacs-lisp :tangle ../init.el
+  (setq straight-base-dir lec/var-directory)
+  (setq straight-repository-branch "develop")
+  (setq comp-deferred-compilation-deny-list nil)
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" lec/var-directory))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  ;; Install use-package and use it by default with straight
+  (straight-use-package 'use-package)
+  (setq use-package-always-ensure t)
+  (setq straight-use-package-by-default t)
+#+end_src
+
+Install latest org mode before using it.
+
+#+begin_src emacs-lisp :tangle ../init.el
+  (use-package org)
+#+end_src
+
 Utilities functions related to the tangling of the files.
 
 #+begin_src emacs-lisp :tangle ../init.el
   (defun lec/tangle-documentation ()
     "Tangle the org file given to cache directory after renaming it."
     (interactive)
-    (require 'org)
     (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 
   (defun lec/--tangle-current-documentation ()
@@ -231,34 +262,6 @@ Due to the recent changes in GNU/Emacs for the ~define-obsolete-function-alias~ 
 #+end_src
 
 ** Emacs defaults.
-
-*** Packages managment.
-
-#+begin_src emacs-lisp
-  (setq straight-base-dir lec/var-directory)
-  (setq straight-repository-branch "develop")
-  (setq comp-deferred-compilation-deny-list nil)
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-         (expand-file-name "straight/repos/straight.el/bootstrap.el" lec/var-directory))
-        (bootstrap-version 5))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-          (url-retrieve-synchronously
-           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-           'silent 'inhibit-cookies)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
-
-  ;; Install use-package
-  (straight-use-package 'use-package)
-  (setq use-package-always-ensure t)
-
-  ;; Configure use-package to use straight-use-package transparently.
-  (use-package straight
-    :custom (straight-use-package-by-default t))
-#+end_src
 
 *** Benchmark emacs start-up.
 
@@ -579,7 +582,6 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 
 #+begin_src emacs-lisp
   (use-package doom-modeline
-    :after all-the-icons
     :hook (after-init . doom-modeline-mode))
 #+end_src
 
@@ -873,10 +875,17 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 *** Undo tree.
 
 #+begin_src emacs-lisp
+  (defvar lec/--undo-history-directory (concat-path lec/var-directory "undos/")
+    "Directory to save undo history files.")
+
+  (unless (file-exists-p lec/--undo-history-directory)
+    (make-directory lec/--undo-history-directory t))
+
   (use-package undo-tree
     :hook (after-init . global-undo-tree-mode)
     :custom
     (undo-tree-auto-save-history t)
+    (undo-tree-history-directory-alist `(("." . ,lec/--undo-history-directory)))
     (undo-tree-visualizer-lazy-drawing 1000))
 #+end_src
 
@@ -912,7 +921,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (blamer-commit-formatter "● %s ● ")
     :custom-face
     (blamer-face ((t :foreground "#525254"
-		     :background nil
+		     :background unspecified
 		     :italic t))))
 
   (use-package git-gutter
@@ -1024,7 +1033,12 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 #+begin_src emacs-lisp
   (use-package cc-mode
     :hook ((c-mode . lsp-deferred)
-           (c++-mode . lsp-deferred)))
+           (c++-mode . lsp-deferred))
+    :custom
+    (lsp-clangd-version "20.1.7")
+    (lsp-clients-clangd-args '("--experimental-modules-support" "--clang-tidy")))
+
+  (use-package cmake-mode)
 #+end_src
 
 *** Javascript.

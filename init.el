@@ -27,10 +27,32 @@
 (defconst lec/tangled-doc-file (concat-path lec/var-directory "tangled-conf.el")
   "File destination for tangled code blocks from the documentation.")
 
+(setq straight-base-dir lec/var-directory)
+(setq straight-repository-branch "develop")
+(setq comp-deferred-compilation-deny-list nil)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" lec/var-directory))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;; Install use-package and use it by default with straight
+(straight-use-package 'use-package)
+(setq use-package-always-ensure t)
+(setq straight-use-package-by-default t)
+
+(use-package org)
+
 (defun lec/tangle-documentation ()
   "Tangle the org file given to cache directory after renaming it."
   (interactive)
-  (require 'org)
   (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 
 (defun lec/--tangle-current-documentation ()

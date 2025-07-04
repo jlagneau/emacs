@@ -9,7 +9,11 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(setq package-enable-at-startup nil)
+(setq package-quickstart nil)
 (setq inhibit-startup-message t
+      package-enable-at-startup nil
+      package-enable-at-startup nil
       ring-bell-function 'ignore
       use-dialog-box nil
       ad-redefinition-action 'accept)
@@ -38,10 +42,8 @@
 
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6
-      native-comp-deferred-compilation t
+      native-comp-jit-compilation t
       warning-minimum-level :error
-      package-enable-at-startup nil
-      package-quickstart nil
       load-prefer-newer noninteractive)
 
 (set-language-environment "UTF-8")
