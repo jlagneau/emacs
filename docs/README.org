@@ -453,12 +453,9 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 
 #+begin_src emacs-lisp
   (use-package ansi-color
-    :hook (compilation-filter . lec/colorize-compilation-buffer)
-    :config
-    (defun lec/colorize-compilation-buffer ()
-      "Colorize the compilation buffer on color escape codes."
-      (when (eq major-mode 'compilation-mode)
-	(ansi-or-apply-on-region compilation-filter-start (point-max)))))
+    :hook (compilation-filter . ansi-color-compilation-filter)
+    :custom
+    (compilation-scroll-output 'first-error))
 #+end_src
 
 ** Completion frameworks.
