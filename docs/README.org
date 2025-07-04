@@ -819,7 +819,11 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 
 #+begin_src emacs-lisp
   (use-package projectile
-    :hook (after-init . projectile-mode))
+    :init
+    (setq projectile-project-search-path '("~/Work/"))
+    :config
+    (global-set-key (kbd "C-c p") 'projectile-command-map)
+    (projectile-mode +1))
 #+end_src
 
 *** Show emacs shortcuts on key pressed.
