@@ -822,6 +822,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
   (use-package flycheck
     :hook (after-init . global-flycheck-mode)
     :custom
+    (flycheck-emacs-lisp-load-path 'inherit)
     (flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
   (use-package flycheck-aspell
