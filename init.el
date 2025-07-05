@@ -9,23 +9,19 @@
          "early-init")
         'noerror 'nomessage))
 
-(defun lec/concat-path (&rest parts)
-"Concatenate two or more path together."
-  (cl-reduce (lambda (a b) (expand-file-name b a)) parts))
-
-(defconst lec/etc-directory (lec/concat-path user-emacs-directory "etc")
+(defconst lec/etc-directory (file-name-concat user-emacs-directory "etc")
   "Directory where external configurations for packages goes.")
 
-(defconst lec/doc-directory (lec/concat-path user-emacs-directory "docs")
+(defconst lec/doc-directory (file-name-concat user-emacs-directory "docs")
   "Directory where literate configuration in org-mode lies.")
 
-(defconst lec/var-directory (lec/concat-path user-emacs-directory "var")
+(defconst lec/var-directory (file-name-concat user-emacs-directory "var")
   "Directory where temporary files and packages resources goes.")
 
-(defconst lec/doc-file (lec/concat-path lec/doc-directory "README.org")
+(defconst lec/doc-file (file-name-concat lec/doc-directory "README.org")
   "Documentation file for the configuration.")
 
-(defconst lec/tangled-doc-file (lec/concat-path lec/var-directory "tangled-conf.el")
+(defconst lec/tangled-doc-file (file-name-concat lec/var-directory "tangled-conf.el")
   "File destination for tangled code blocks from the documentation.")
 
 (setq straight-base-dir lec/var-directory)
@@ -80,5 +76,5 @@ modified manually."
 
 (load lec/tangled-doc-file)
 
-(setq-default custom-file (lec/concat-path lec/etc-directory "custom.el"))
+(setq-default custom-file (file-name-concat lec/etc-directory "custom.el"))
 (load custom-file 'noerror 'nomessage)

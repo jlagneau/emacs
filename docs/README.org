@@ -121,30 +121,22 @@ If emacs is not at least in version 27, manually load the early-init file.
           'noerror 'nomessage))
 #+end_src
 
-Create a helper function to concatenate path no matter if the entries end with a directory separator or not.
-
-#+begin_src emacs-lisp :tangle ../init.el
-  (defun lec/concat-path (&rest parts)
-  "Concatenate two or more path together."
-    (cl-reduce (lambda (a b) (expand-file-name b a)) parts))
-#+end_src
-
 Declare and initialize all the variables for the directory structure and important files used in the literate configuration.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (defconst lec/etc-directory (lec/concat-path user-emacs-directory "etc")
+  (defconst lec/etc-directory (file-name-concat user-emacs-directory "etc")
     "Directory where external configurations for packages goes.")
 
-  (defconst lec/doc-directory (lec/concat-path user-emacs-directory "docs")
+  (defconst lec/doc-directory (file-name-concat user-emacs-directory "docs")
     "Directory where literate configuration in org-mode lies.")
 
-  (defconst lec/var-directory (lec/concat-path user-emacs-directory "var")
+  (defconst lec/var-directory (file-name-concat user-emacs-directory "var")
     "Directory where temporary files and packages resources goes.")
 
-  (defconst lec/doc-file (lec/concat-path lec/doc-directory "README.org")
+  (defconst lec/doc-file (file-name-concat lec/doc-directory "README.org")
     "Documentation file for the configuration.")
 
-  (defconst lec/tangled-doc-file (lec/concat-path lec/var-directory "tangled-conf.el")
+  (defconst lec/tangled-doc-file (file-name-concat lec/var-directory "tangled-conf.el")
     "File destination for tangled code blocks from the documentation.")
 #+end_src
 
@@ -227,7 +219,7 @@ Load the tangled configuration.
 And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rewrite this file.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (setq-default custom-file (lec/concat-path lec/etc-directory "custom.el"))
+  (setq-default custom-file (file-name-concat lec/etc-directory "custom.el"))
   (load custom-file 'noerror 'nomessage)
 #+end_src
 
@@ -393,14 +385,14 @@ to automatically refresh its content too.
 Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid polluting the source files directories.
 
 #+begin_src emacs-lisp
-  (let ((backup-dir (lec/concat-path lec/var-directory "backups"))
-        (auto-saves-dir (lec/concat-path lec/var-directory "auto-saves")))
+  (let ((backup-dir (file-name-concat lec/var-directory "backups"))
+        (auto-saves-dir (file-name-concat lec/var-directory "auto-saves")))
     (dolist (dir (list backup-dir auto-saves-dir))
       (when (not (file-directory-p dir))
         (make-directory dir t)))
     (setq backup-directory-alist `(("." . ,backup-dir))
           auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
-          auto-save-list-file-prefix (lec/concat-path auto-saves-dir ".saves-")
+          auto-save-list-file-prefix (file-name-concat auto-saves-dir ".saves-")
           tramp-backup-directory-alist `((".*" . ,backup-dir))
           tramp-auto-save-directory auto-saves-dir))
 
@@ -421,7 +413,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
   (use-package recentf
     :hook (after-init . recentf-mode)
     :custom
-    (recentf-save-file (lec/concat-path lec/var-directory "recentf"))
+    (recentf-save-file (file-name-concat lec/var-directory "recentf"))
     (recentf-max-saved-items 500)
     (recentf-max-menu-items 15)
     (recentf-auto-cleanup 'never)
@@ -645,7 +637,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
           dashboard-navigator-buttons
           `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
              (,nil "Update packages" "Update all packages" (lambda (&rest _) (straight-pull-all)) warning)
-             (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (lec/concat-path user-emacs-directory "init.el"))) warning))
+             (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (file-name-concat user-emacs-directory "init.el"))) warning))
             ((,nil "System services" "Manage services" (lambda (&rest _) (daemons)) error)
              (,nil "System processes" "Manage processes" (lambda (&rest _) (proced)) error)))
           dashboard-show-shortcuts nil
@@ -863,7 +855,7 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 *** Undo tree.
 
 #+begin_src emacs-lisp
-  (defvar lec/--undo-history-directory (lec/concat-path lec/var-directory "undos/")
+  (defvar lec/--undo-history-directory (file-name-concat lec/var-directory "undos/")
     "Directory to save undo history files.")
 
   (unless (file-exists-p lec/--undo-history-directory)
@@ -1100,9 +1092,9 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :custom
     (lsp-intelephense-clear-cache t)
     (lsp-intelephense-global-storage-path
-     (lec/concat-path lec/var-directory "intelephense"))
+     (file-name-concat lec/var-directory "intelephense"))
     (lsp-intelephense-licence-key
-     (lec/--file-contents (lec/concat-path
+     (lec/--file-contents (file-name-concat
 			   (getenv "XDG_DATA_HOME")
 			   "intelephense/license.txt"))))
 
