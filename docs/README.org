@@ -416,8 +416,14 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (recentf-max-menu-items 15)
     (recentf-auto-cleanup 'never)
     :config
-    (add-to-list 'recentf-exclude lec/var-directory)
-    (add-to-list 'recentf-exclude lec/etc-directory))
+    (add-to-list 'recentf-exclude (recentf-expand-file-name lec/var-directory))
+    (add-to-list 'recentf-exclude (recentf-expand-file-name lec/etc-directory))
+    (add-to-list 'recentf-exclude
+                 (recentf-expand-file-name
+		  (file-name-concat user-emacs-directory "init.el")))
+    (add-to-list 'recentf-exclude
+                 (recentf-expand-file-name
+                  (file-name-concat user-emacs-directory "early-init.el"))))
 #+end_src
 
 **** Emacs Yes or No prompt
