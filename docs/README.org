@@ -420,7 +420,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (add-to-list 'recentf-exclude (recentf-expand-file-name lec/etc-directory))
     (add-to-list 'recentf-exclude
                  (recentf-expand-file-name
-		  (file-name-concat user-emacs-directory "init.el")))
+                  (file-name-concat user-emacs-directory "init.el")))
     (add-to-list 'recentf-exclude
                  (recentf-expand-file-name
                   (file-name-concat user-emacs-directory "early-init.el"))))
@@ -448,19 +448,19 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 #+begin_src emacs-lisp
   (use-package company
     :hook ((prog-mode . company-mode)
-	   (org-mode . company-mode))
+           (org-mode . company-mode))
     :config
     (setq company-tooltip-align-annotations t
-	  company-minimum-prefix-length 1
-	  company-async-timeout 10)
+          company-minimum-prefix-length 1
+          company-async-timeout 10)
     (defvar company-mode/enable-yas t
       "Enable yasnippet for all backends.")
 
     (defun company-mode/backend-with-yas (backend)
       (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-	  backend
-	(append (if (consp backend) backend (list backend))
-		'(:with company-yasnippet))))
+          backend
+        (append (if (consp backend) backend (list backend))
+                '(:with company-yasnippet))))
 
     (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
 #+end_src
@@ -498,7 +498,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
            ("<tab>" . helm-execute-persistent-action)
            ("C-i" . helm-execute-persistent-action)
            ("C-z" . helm-select-action))
-    :hook ((helm-minibuffer-set-up . lec/helm-hide-minibuffer-maybe))
+;    :hook ((helm-minibuffer-set-up . lec/helm-hide-minibuffer-maybe))
     :custom
     (helm-M-x-fuzzy-match                  t "Fuzzy matching with M-x.")
     (helm-buffers-fuzzy-matching           t "Fuzzy matching with buffers list.")
@@ -506,7 +506,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (helm-ff-search-library-in-sexp        t "Search for library in `require' and `declare-function' sexp.")
     (helm-scroll-amount                    8 "Scroll 8 lines other window using M-<next>/M-<prior>.")
     (helm-ff-file-name-history-use-recentf t)
-    (helm-echo-input-in-header-line        t)
+;    (helm-echo-input-in-header-line        t)
     (helm-display-header-line              nil)
     (helm-autoresize-max-height            20)
     (helm-autoresize-min-height            5)
@@ -529,8 +529,8 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 #+begin_src emacs-lisp
   (use-package yasnippet
     :hook ((text-mode . yas-minor-mode)
-	   (org-mode . yas-minor-mode)
-	   (prog-mode . yas-minor-mode)))
+           (org-mode . yas-minor-mode)
+           (prog-mode . yas-minor-mode)))
 
   (use-package yasnippet-snippets
     :after (yasnippet))
@@ -886,14 +886,14 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     :hook (magit-mode . magit-todos-mode)
     :config
     (setq magit-todos-recursive t
-	  magit-todos-depth 10
-	  magit-todos-exclude-globs '(".git/" ".cache/*" "vendor/*" "node_modules/*"))
+          magit-todos-depth 10
+          magit-todos-exclude-globs '(".git/" ".cache/*" "vendor/*" "node_modules/*"))
     (custom-set-variables
      '(magit-todos-keywords (list "TODO" "FIXME"))))
 
   (use-package blamer
     :hook ((prog-mode . blamer-mode)
-	   (org-mode . blamer-mode))
+           (org-mode . blamer-mode))
     :bind (("s-i" . blamer-show-commit-info))
     :custom
     (blamer-idle-time 0.5)
@@ -906,13 +906,13 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (blamer-commit-formatter "● %s ● ")
     :custom-face
     (blamer-face ((t :foreground "#525254"
-		     :background unspecified
-		     :italic t))))
+                     :background unspecified
+                     :italic t))))
 
   (use-package git-gutter
     :hook ((prog-mode . git-gutter-mode)
-	   (org-mode . git-gutter-mode)
-	   (magit-post-refresh . git-gutter:update-all-windows))
+           (org-mode . git-gutter-mode)
+           (magit-post-refresh . git-gutter:update-all-windows))
     :custom
     (git-gutter:update-interval 2))
 
@@ -1102,8 +1102,8 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
      (file-name-concat lec/var-directory "lsp-cache"))
     (lsp-intelephense-licence-key
      (lec/--file-contents (file-name-concat
-			   (getenv "XDG_DATA_HOME")
-			   "intelephense/license.txt"))))
+                           (getenv "XDG_DATA_HOME")
+                           "intelephense/license.txt"))))
 
   (use-package ac-php
     :after (php-mode company-mode helm))
