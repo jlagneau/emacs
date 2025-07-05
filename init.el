@@ -39,13 +39,10 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
-;; Install use-package and use it by default with straight
 (straight-use-package 'use-package)
 (setq use-package-always-ensure t)
 (setq straight-use-package-by-default t)
 
-;; Install and / or load the latest org-mode before attempting to tangle anything.
 (use-package org)
 
 (defun lec/tangle-documentation ()

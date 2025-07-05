@@ -39,8 +39,9 @@
 (setq initial-major-mode 'fundamental-mode)
 (setq initial-scratch-message nil)
 
-(setq gc-cons-threshold most-positive-fixnum
+(setq gc-cons-threshold (* 100 1024 1024) ; 100 MiB
       gc-cons-percentage 0.6
+      read-process-output-max (* 5 1024 1024) ; 5 MiB
       native-comp-jit-compilation t
       warning-minimum-level :error
       load-prefer-newer noninteractive)
