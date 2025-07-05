@@ -3,5 +3,4 @@
 .\#*
 *.elc
 /eln-cache/
-/lsp-cache/
 /var/

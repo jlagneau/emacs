@@ -1093,6 +1093,8 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
     (lsp-intelephense-clear-cache t)
     (lsp-intelephense-global-storage-path
      (file-name-concat lec/var-directory "intelephense"))
+    (lsp-intelephense-storage-path
+     (file-name-concat lec/var-directory "lsp-cache"))
     (lsp-intelephense-licence-key
      (lec/--file-contents (file-name-concat
 			   (getenv "XDG_DATA_HOME")
