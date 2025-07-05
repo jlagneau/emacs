@@ -91,11 +91,12 @@ Change the scratch buffer initial major mode to ~Fundamental~ to speedup the ini
   (setq initial-scratch-message nil)
 #+end_src
 
-Disable the garbage collection and set the minimum warning level.
+Configure the garbage collection with high values, and set the minimum warning level.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
-  (setq gc-cons-threshold most-positive-fixnum
+  (setq gc-cons-threshold (* 100 1024 1024) ; 100 MiB
         gc-cons-percentage 0.6
+        read-process-output-max (* 5 1024 1024) ; 5 MiB
         native-comp-jit-compilation t
         warning-minimum-level :error
         load-prefer-newer noninteractive)
