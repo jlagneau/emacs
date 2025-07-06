@@ -134,6 +134,9 @@ Declare and initialize all the variables for the directory structure and importa
 
   (defconst lec/tangled-doc-file (file-name-concat lec/var-directory "tangled-conf.el")
     "File destination for tangled code blocks from the documentation.")
+
+  (defconst lec/compiled-doc-file (file-name-concat lec/var-directory "tangled-conf.elc")
+    "File destination for compiled configuration from the documentation")
 #+end_src
 
 Install straight.el package manager and configure ~use-package~ to handle the installation and lazy loading of the packages.
@@ -182,7 +185,8 @@ Utilities functions related to the tangling of the files.
     "Tangle the org file given to cache directory after renaming it."
     (interactive)
     (require 'org)
-    (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
+    (org-babel-tangle-file lec/doc-file lec/tangled-doc-file)
+    (byte-compile-file lec/tangled-doc-file))
 
   (defun lec/--tangle-current-documentation ()
     "If the the file currently edited is the documentation configuration, tangle
@@ -217,7 +221,7 @@ If the tangled configuration does not exists, tangle it.
 Load the tangled configuration.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (load lec/tangled-doc-file)
+  (load lec/compiled-doc-file)
 #+end_src
 
 And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rewrite this file.
