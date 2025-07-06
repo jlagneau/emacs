@@ -614,13 +614,28 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]].
 
 #+begin_src emacs-lisp
-  (use-package all-the-icons
-    :after (doom-modeline))
+  ;(use-package all-the-icons
+  ;  :after (doom-modeline))
+
+  (use-package nerd-icons
+    :straight (nerd-icons
+               :type git
+               :host github
+               :repo "rainstormstudio/nerd-icons.el"
+               :files (:defaults "data" "nerd-icons-pkg.el"))
+    :custom
+    ;; The Nerd Font you want to use in GUI
+    ;; "Symbols Nerd Font Mono" is the default and is recommended
+    ;; but you can use any other Nerd Font if you want
+    (nerd-icons-font-family "Symbols Nerd Font Mono"))
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package all-the-icons-dired
-    :hook (dired-mode . all-the-icons-dired-mode))
+  ;(use-package all-the-icons-dired
+  ;  :hook (dired-mode . all-the-icons-dired-mode))
+  (use-package nerd-icons-dired
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
 *** Line numbers for programming modes.
