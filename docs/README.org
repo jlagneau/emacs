@@ -314,6 +314,9 @@ Highlight undo and redos.
     :hook ((text-mode . undo-hl-mode)
            (org-mode . undo-hl-mode)
            (prog-mode . undo-hl-mode))
+    :custom
+    (undo-hl-undo-commands
+     '(undo undo-tree-undo undo-tree-redo undo-tree-visualize-undo undo-tree-visualize-redo))
     :custom-face
     (undo-hl-insert ((t (:background "#B6E63E"))))
     (undo-hl-delete ((t (:background "#FB2874")))))
