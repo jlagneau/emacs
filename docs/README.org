@@ -110,15 +110,11 @@ Set the locale and input method.
 
 **** init.el file.
 
-If emacs is not at least in version 27, manually load the early-init file.
+If emacs is not at least in version 30, display an error message..
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (when (version< emacs-version "27")
-    (message "Emacs version < 27 do not support early-init.el. Load it manually.")
-    (load (concat
-           (file-name-directory load-file-name)
-           "early-init")
-          'noerror 'nomessage))
+  (when (version< emacs-version "30")
+    (error "Emacs version < 30 is not supported"))
 #+end_src
 
 Declare and initialize all the variables for the directory structure and important files used in the literate configuration.
