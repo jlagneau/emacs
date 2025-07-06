@@ -164,6 +164,14 @@ Install straight.el package manager and configure ~use-package~ to handle the in
   (setq straight-use-package-by-default t)
 #+end_src
 
+Enable benchmarking early.
+
+#+begin_src emacs-lisp :tangle ../init.el
+  (use-package benchmark-init
+    :hook (after-init . benchmark-init/deactivate)
+    :init (benchmark-init/activate))
+#+end_src
+
 Install latest org mode before using it.
 
 #+begin_src emacs-lisp :tangle ../init.el
@@ -252,10 +260,6 @@ And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rew
 *** Benchmark emacs start-up.
 
 #+begin_src emacs-lisp
-  (use-package benchmark-init
-    :config
-    (require 'benchmark-init-modes) ; explicitly required
-    (add-hook 'after-init-hook #'benchmark-init/deactivate))
 #+end_src
 
 *** Avoid littering temporary files everywhere.

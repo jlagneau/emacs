@@ -44,7 +44,10 @@
 (setq use-package-always-ensure t)
 (setq straight-use-package-by-default t)
 
-(use-package org)
+(use-package benchmark-init
+  :hook (after-init . benchmark-init/deactivate)
+  :init (benchmark-init/activate))
+
 (use-package org
   :defer t)
 
