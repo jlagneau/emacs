@@ -672,22 +672,29 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 
 #+begin_src emacs-lisp
   (use-package dashboard
+    :bind (("<home>" . dashboard-open))
+    :init
+    (setq initial-buffer-choice 'dashboard-open)
     :config
-    (setq dashboard-center-content t
-          dashboard-startup-banner 'logo
-          dashboard-set-navigator t
-          dashboard-navigator-buttons
-          `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
-             (,nil "Update packages" "Update all packages" (lambda (&rest _) (straight-pull-all)) warning)
-             (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (file-name-concat user-emacs-directory "init.el"))) warning))
-            ((,nil "System services" "Manage services" (lambda (&rest _) (daemons)) error)
-             (,nil "System processes" "Manage processes" (lambda (&rest _) (proced)) error)))
-          dashboard-show-shortcuts nil
-          dashboard-set-heading-icons t
-          dashboard-set-file-icons t
-          dashboard-items '((recents  . 10)
-                            (projects . 10)))
-    (dashboard-setup-startup-hook))
+    (dashboard-setup-startup-hook)
+    :custom
+    (dashboard-center-content t)
+    (dashboard-startup-banner 'logo)
+  ;; FIXME navitagor is broken.
+  ;        dashboard-set-navigator t
+  ;        dashboard-navigator-buttons
+  ;        `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
+  ;           (,nil "Update packages" "Update all packages" (lambda (&rest _) (straight-pull-all)) warning)
+  ;           (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (file-name-concat user-emacs-directory "init.el"))) warning))
+  ;          ((,nil "System services" "Manage services" (lambda (&rest _) (daemons)) error)
+  ;           (,nil "System processes" "Manage processes" (lambda (&rest _) (proced)) error)))
+     (dashboard-show-shortcuts nil)
+     (dashboard-display-icons-p t)
+     (dashboard-icon-type 'nerd-icons)
+     (dashboard-set-heading-icons t)
+     (dashboard-set-file-icons t)
+     (dashboard-items '((recents  . 10)
+                        (projects . 10))))
 #+end_src
 
 *** Garbage collection magic.
