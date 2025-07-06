@@ -144,6 +144,7 @@ Declare and initialize all the variables for the directory structure and importa
 Install straight.el package manager and configure ~use-package~ to handle the installation and lazy loading of the packages.
 
 #+begin_src emacs-lisp :tangle ../init.el
+  (setq straight-check-for-modifications '(check-on-save find-when-checking))
   (setq straight-base-dir lec/var-directory)
   (setq straight-repository-branch "develop")
   (setq comp-deferred-compilation-deny-list nil)

@@ -24,6 +24,7 @@
 (defconst lec/tangled-doc-file (file-name-concat lec/var-directory "tangled-conf.el")
   "File destination for tangled code blocks from the documentation.")
 
+(setq straight-check-for-modifications '(check-on-save find-when-checking))
 (setq straight-base-dir lec/var-directory)
 (setq straight-repository-branch "develop")
 (setq comp-deferred-compilation-deny-list nil)
