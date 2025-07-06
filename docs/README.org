@@ -578,6 +578,16 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
     :hook (after-init . doom-modeline-mode))
 #+end_src
 
+*** Visual enhancement.
+
+#+begin_src emacs-lisp
+  (use-package solaire-mode
+    :config
+    (add-to-list 'solaire-mode-themes-to-face-swap "^doom-")
+    (setq solaire-mode-auto-swap-bg t)
+    (solaire-global-mode +1))
+#+end_src
+
 *** Font ligatures.
 
 #+begin_src emacs-lisp
