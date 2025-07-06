@@ -260,6 +260,10 @@ And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rew
 *** Benchmark emacs start-up.
 
 #+begin_src emacs-lisp
+  (use-package esup
+    :custom (esup-depth 0))
+  ;  (use-package benchmark-init
+  ;    :hook (after-init . benchmark-init/deactivate))
 #+end_src
 
 *** Avoid littering temporary files everywhere.
