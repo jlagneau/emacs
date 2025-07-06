@@ -204,18 +204,18 @@ Utilities functions related to the tangling of the files.
     (save-buffer))
 #+end_src
 
-If the tangled configuration does not exists, tangle it.
-
-#+begin_src emacs-lisp :tangle ../init.el
-  (unless (file-exists-p lec/tangled-doc-file)
-    (lec/tangle-documentation))
-#+end_src
-
 Hooks to tangle configuration when the documentation is modified. Also add headers to specify that these files should not be modified directly as they get rewritten each time the documentation is modified.
 
 #+begin_src emacs-lisp :tangle ../init.el
   (add-hook 'after-save-hook #'lec/--tangle-current-documentation)
   (add-hook 'org-babel-post-tangle-hook #'lec/--add-tangle-headers)
+#+end_src
+
+If the tangled configuration does not exists, tangle it.
+
+#+begin_src emacs-lisp :tangle ../init.el
+  (unless (file-exists-p lec/tangled-doc-file)
+    (lec/tangle-documentation))
 #+end_src
 
 Load the tangled configuration.

@@ -72,11 +72,11 @@ modified manually."
   (insert ";;; See `docs/README.org' for the original source.\n\n")
   (save-buffer))
 
-(unless (file-exists-p lec/tangled-doc-file)
-  (lec/tangle-documentation))
-
 (add-hook 'after-save-hook #'lec/--tangle-current-documentation)
 (add-hook 'org-babel-post-tangle-hook #'lec/--add-tangle-headers)
+
+(unless (file-exists-p lec/tangled-doc-file)
+  (lec/tangle-documentation))
 
 (load lec/tangled-doc-file)
 
