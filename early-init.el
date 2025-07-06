@@ -14,7 +14,6 @@
 
 (setq inhibit-startup-message t
       package-enable-at-startup nil
-      package-enable-at-startup nil
       ring-bell-function 'ignore
       use-dialog-box nil
       ad-redefinition-action 'accept)
@@ -42,9 +41,9 @@
 (setq gc-cons-threshold (* 100 1024 1024) ; 100 MiB
       gc-cons-percentage 0.6
       read-process-output-max (* 5 1024 1024) ; 5 MiB
+      load-prefer-newer t
       native-comp-jit-compilation t
-      warning-minimum-level :error
-      load-prefer-newer noninteractive)
+      warning-minimum-level :error)
 
 (set-language-environment "UTF-8")
 (setq default-input-method nil)
