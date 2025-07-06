@@ -920,7 +920,18 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
            (org-mode . git-gutter-mode)
            (magit-post-refresh . git-gutter:update-all-windows))
     :custom
-    (git-gutter:update-interval 2))
+    (git-gutter:update-interval 2)
+    :config
+    (custom-set-variables
+     '(git-gutter:modified-sign "=") ;; two space
+     '(git-gutter:added-sign "+")    ;; multiple character is OK
+     '(git-gutter:deleted-sign "-"))
+      (set-face-foreground 'git-gutter:modified "#FD971F")
+      (set-face-background 'git-gutter:modified "#FD971F")
+      (set-face-foreground 'git-gutter:added "#B6E63E")
+      (set-face-background 'git-gutter:added "#B6E63E")
+      (set-face-foreground 'git-gutter:deleted "#FB2874")
+      (set-face-background 'git-gutter:deleted "#FB2874"))
 
   (use-package git-gutter-fringe
     :if window-system
