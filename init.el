@@ -45,10 +45,13 @@
 (setq straight-use-package-by-default t)
 
 (use-package org)
+(use-package org
+  :defer t)
 
 (defun lec/tangle-documentation ()
   "Tangle the org file given to cache directory after renaming it."
   (interactive)
+  (require 'org)
   (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 
 (defun lec/--tangle-current-documentation ()

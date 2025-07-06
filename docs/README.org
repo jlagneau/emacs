@@ -168,7 +168,8 @@ Install straight.el package manager and configure ~use-package~ to handle the in
 Install latest org mode before using it.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (use-package org)
+  (use-package org
+    :defer t)
 #+end_src
 
 Utilities functions related to the tangling of the files.
@@ -177,6 +178,7 @@ Utilities functions related to the tangling of the files.
   (defun lec/tangle-documentation ()
     "Tangle the org file given to cache directory after renaming it."
     (interactive)
+    (require 'org)
     (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 
   (defun lec/--tangle-current-documentation ()
