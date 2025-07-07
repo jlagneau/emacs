@@ -264,15 +264,6 @@ Set the terminal tab name when the buffer changes. The function checks if emacs 
 
 ** Emacs defaults
 
-*** Benchmark emacs start-up
-
-#+begin_src emacs-lisp
-  (use-package esup
-    :custom (esup-depth 0))
-  ;  (use-package benchmark-init
-  ;    :hook (after-init . benchmark-init/deactivate))
-#+end_src
-
 *** Avoid littering temporary files everywhere
 
 #+begin_src emacs-lisp
@@ -924,6 +915,12 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
   (use-package pdf-view-restore
     :after pdf-tools
     :hook (pdf-view-mode . pdf-view-restore))
+#+end_src
+*** Profiling start-up
+
+#+begin_src emacs-lisp
+  (use-package esup
+    :custom (esup-depth 0))
 #+end_src
 
 *** Project managment
