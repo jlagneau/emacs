@@ -889,9 +889,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
   (use-package treemacs-projectile
     :after (treemacs projectile))
 
-  (use-package treemacs-icons-dired
-    :hook (dired-mode . treemacs-icons-dired-enable-once))
-
   (use-package treemacs-nerd-icons
     :after (nerd-icons treemacs)
     :config
