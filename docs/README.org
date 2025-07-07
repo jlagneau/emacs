@@ -863,6 +863,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
       ;; using a Hi-DPI display, uncomment this to double the icon size.
       ;;(treemacs-resize-icons 44)
 
+      (treemacs-project-follow-mode t)
       (treemacs-follow-mode t)
       (treemacs-filewatch-mode t)
       (treemacs-fringe-indicator-mode 'always)
