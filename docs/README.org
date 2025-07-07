@@ -1019,7 +1019,9 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 #+begin_src emacs-lisp
   (use-package magit
     :commands magit-status
-    :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+    (magit-diff-refine-hunk 'all))
 
   (use-package magit-todos
     :commands (magit-todos-mode)
