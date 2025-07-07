@@ -20,9 +20,6 @@
 (defconst lec/tangled-doc-file (file-name-concat lec/var-directory "tangled-conf.el")
   "File destination for tangled code blocks from the documentation.")
 
-(defconst lec/compiled-doc-file (file-name-concat lec/var-directory "tangled-conf.elc")
-  "File destination for compiled configuration from the documentation")
-
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 (setq straight-base-dir lec/var-directory)
 (setq straight-repository-branch "develop")
@@ -54,8 +51,7 @@
   "Tangle the org file given to cache directory after renaming it."
   (interactive)
   (require 'org)
-  (org-babel-tangle-file lec/doc-file lec/tangled-doc-file)
-  (byte-compile-file lec/tangled-doc-file))
+  (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 
 (defun lec/--tangle-current-documentation ()
   "If the the file currently edited is the documentation configuration, tangle
@@ -78,7 +74,7 @@ modified manually."
 (unless (file-exists-p lec/tangled-doc-file)
   (lec/tangle-documentation))
 
-(load lec/compiled-doc-file)
+(load lec/tangled-doc-file)
 
 (setq-default custom-file (file-name-concat lec/etc-directory "custom.el"))
 (load custom-file 'noerror 'nomessage)
