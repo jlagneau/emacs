@@ -1082,20 +1082,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :defer t)
 #+end_src
 
-*** Fish
-
-#+begin_src emacs-lisp
-  (use-package fish-mode
-    :defer t)
-#+end_src
-
-*** Javascript
-
-#+begin_src emacs-lisp
-  (use-package js2-mode
-    :defer t)
-#+end_src
-
 *** Org
 
 [[https://orgmode.org/][Org-mode]] documentation.
@@ -1147,30 +1133,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (visual-fill-column-center-text t))
 #+end_src
 
-*** PHP
-
-#+begin_src emacs-lisp
-  (use-package php-mode
-    :defer t
-    :hook ((php-mode . lsp-deferred))
-    :custom
-    (lsp-intelephense-clear-cache t)
-    (lsp-intelephense-global-storage-path
-     (file-name-concat lec/var-directory "intelephense"))
-    (lsp-intelephense-storage-path
-     (file-name-concat lec/var-directory "lsp-cache"))
-    (lsp-intelephense-licence-key
-     (lec/--file-contents (file-name-concat
-                           (getenv "XDG_DATA_HOME")
-                           "intelephense/license.txt"))))
-
-  (use-package ac-php
-    :after (php-mode company-mode helm))
-
-  (use-package composer
-    :after (php-mode))
-#+end_src
-
 *** Rust
 
 #+begin_src emacs-lisp
@@ -1198,19 +1160,19 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
       :hook (rust-mode . cargo-minor-mode))
 #+end_src
 
+*** Shell
+**** Fish shell
+
+#+begin_src emacs-lisp
+  (use-package fish-mode
+    :defer t)
+#+end_src
+
 *** TOML
 
 #+begin_src emacs-lisp
   (use-package toml-mode
     :mode ("\\.toml$" . toml-mode))
-#+end_src
-
-*** Typescript
-
-#+begin_src emacs-lisp
-  (use-package typescript-mode
-    :defer t
-    :hook (typescript-mode . lsp-deferred))
 #+end_src
 
 *** Web
@@ -1228,6 +1190,45 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (add-to-list 'auto-mode-alist '("\\.vue$" . vue-mode)))
 
   (add-hook 'vue-mode-hook #'lsp-deferred)
+#+end_src
+
+**** PHP
+
+#+begin_src emacs-lisp
+  (use-package php-mode
+    :defer t
+    :hook ((php-mode . lsp-deferred))
+    :custom
+    (lsp-intelephense-clear-cache t)
+    (lsp-intelephense-global-storage-path
+     (file-name-concat lec/var-directory "intelephense"))
+    (lsp-intelephense-storage-path
+     (file-name-concat lec/var-directory "lsp-cache"))
+    (lsp-intelephense-licence-key
+     (lec/--file-contents (file-name-concat
+                           (getenv "XDG_DATA_HOME")
+                           "intelephense/license.txt"))))
+
+  (use-package ac-php
+    :after (php-mode company-mode helm))
+
+  (use-package composer
+    :after (php-mode))
+#+end_src
+
+**** Javascript
+
+#+begin_src emacs-lisp
+  (use-package js2-mode
+    :defer t)
+#+end_src
+
+**** Typescript
+
+#+begin_src emacs-lisp
+  (use-package typescript-mode
+    :defer t
+    :hook (typescript-mode . lsp-deferred))
 #+end_src
 
 *** YAML
