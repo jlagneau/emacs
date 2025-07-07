@@ -630,12 +630,9 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 
 *** Icons.
 
-Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]].
+Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons]].
 
 #+begin_src emacs-lisp
-  ;(use-package all-the-icons
-  ;  :after (doom-modeline))
-
   (use-package nerd-icons
     :straight (nerd-icons
                :type git
@@ -650,11 +647,9 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
 #+end_src
 
 #+begin_src emacs-lisp
-  ;(use-package all-the-icons-dired
-  ;  :hook (dired-mode . all-the-icons-dired-mode))
   (use-package nerd-icons-dired
-    :hook
-    (dired-mode . nerd-icons-dired-mode))
+    :after (nerd-icons)
+    :hook (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
 *** Line numbers for programming modes.
@@ -912,8 +907,6 @@ Documentation for [[https://github.com/domtronn/all-the-icons.el][all-the-icons]
   (use-package treemacs-icons-dired
     :hook (dired-mode . treemacs-icons-dired-enable-once))
 
-  ;(use-package treemacs-all-the-icons
-  ;  :after (treemacs all-the-icons))
   (use-package treemacs-nerd-icons
     :after (nerd-icons treemacs)
     :config
