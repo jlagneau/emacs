@@ -180,7 +180,7 @@ Utilities functions related to the tangling of the files. Add hooks to tangle co
     "If the the file currently edited is the documentation configuration, tangle
   the code blocks."
     (when (string-match lec/doc-file buffer-file-name)
-      (lec/tangle-documentation)))
+      (lec/--tangle-documentation)))
 
   (defun lec/--add-headers ()
     "Add headers at the start of tangled files with a simple warning about how
@@ -199,7 +199,7 @@ If the tangled configuration does not exists, tangle it.
 
 #+begin_src emacs-lisp :tangle ../init.el
   (unless (file-exists-p lec/tangled-doc-file)
-    (lec/tangle-documentation))
+    (lec/--tangle-documentation))
 #+end_src
 
 Load the tangled configuration.

@@ -57,7 +57,7 @@
   "If the the file currently edited is the documentation configuration, tangle
 the code blocks."
   (when (string-match lec/doc-file buffer-file-name)
-    (lec/tangle-documentation)))
+    (lec/--tangle-documentation)))
 
 (defun lec/--add-headers ()
   "Add headers at the start of tangled files with a simple warning about how
@@ -72,7 +72,7 @@ they should not be modified directly."
 (add-hook 'org-babel-post-tangle-hook #'lec/--add-headers)
 
 (unless (file-exists-p lec/tangled-doc-file)
-  (lec/tangle-documentation))
+  (lec/--tangle-documentation))
 
 (load lec/tangled-doc-file)
 
