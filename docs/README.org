@@ -255,9 +255,32 @@ And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rew
   (set-frame-parameter nil 'buffer-predicate 'lec/--bufferp)
 #+end_src
 
-** Emacs defaults.
+Set the terminal tab name when the buffer changes. The function checks if emacs is in a terminal, then check if the ~buffer-name~ changed and is not empty, send a ~shell-command~ and check the ~exit-code~ to send a message if it's not zero.
 
-*** Benchmark emacs start-up.
+#+begin_src emacs-lisp
+  (defvar lec/--last-buffer-name nil
+    "The last buffer name used for setting the WezTerm tab title.")
+
+  (defun lec/--set-wezterm-tab-title ()
+    "Set the wezterm tab title to the current buffer name if running in terminal
+  mode."
+    (when (not (display-graphic-p))
+      (let ((current-buffer-name (buffer-name)))
+        (when (and (not (string= current-buffer-name lec/--last-buffer-name))
+                   (not (string= current-buffer-name "")))
+          (let ((exit-code
+                 (shell-command
+                  (format "wezterm cli set-tab-title '%s'" current-buffer-name))))
+            (when (not (zerop exit-code))
+              (message "Failed to set WezTerm tab title: %s" current-buffer-name)))
+          (setq lec/--last-buffer-name current-buffer-name)))))
+
+  (add-hook 'window-configuration-change-hook 'lec/--set-wezterm-tab-title)
+#+end_src
+
+** Emacs defaults
+
+*** Benchmark emacs start-up
 
 #+begin_src emacs-lisp
   (use-package esup
