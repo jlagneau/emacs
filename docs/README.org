@@ -1019,9 +1019,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
      '(magit-todos-keywords (list "TODO" "FIXME"))))
 
   (use-package blamer
-    :hook ((prog-mode . blamer-mode)
-           (org-mode . blamer-mode))
-    :bind (("s-i" . blamer-show-commit-info))
+    :defer t
     :custom
     (blamer-idle-time 0.5)
     (blamer-min-offset 2)
