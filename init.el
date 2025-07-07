@@ -23,6 +23,7 @@
 (setq straight-check-for-modifications '(check-on-save find-when-checking)
       straight-base-dir lec/var-directory
       straight-repository-branch "develop"
+      straight-vc-git-default-clone-depth 1
       comp-deferred-compilation-deny-list nil)
 (defvar bootstrap-version)
 (let ((bootstrap-file

@@ -13,6 +13,16 @@
 (setq package-enable-at-startup nil
       package-quickstart nil
       inhibit-startup-message t
+      inhibit-startup-screen t
+      use-short-answers t
+      auto-mode-case-fold nil
+      ffap-machine-p-known 'reject
+      fast-but-imprecise-scrolling t
+      frame-inhibit-implied-resize t
+      idle-update-delay 1.0
+      inhibit-compacting-font-caches t
+      redisplay-skip-fontification-on-input t
+      command-line-x-option-alist nil
       ring-bell-function 'ignore
       use-dialog-box nil
       mode-line-format nil
@@ -31,8 +41,6 @@
 (set-language-environment "UTF-8")
 
 (setq-default frame-title-format '("%b"))
-
-(fset 'yes-or-no-p 'y-or-n-p)
 
 (set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 100)
 (set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font" :height 100)

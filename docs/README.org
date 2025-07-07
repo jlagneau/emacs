@@ -38,6 +38,16 @@ Disable a lot of unused functions and features to speed things up, and set up sa
   (setq package-enable-at-startup nil
         package-quickstart nil
         inhibit-startup-message t
+        inhibit-startup-screen t
+        use-short-answers t
+        auto-mode-case-fold nil
+        ffap-machine-p-known 'reject
+        fast-but-imprecise-scrolling t
+        frame-inhibit-implied-resize t
+        idle-update-delay 1.0
+        inhibit-compacting-font-caches t
+        redisplay-skip-fontification-on-input t
+        command-line-x-option-alist nil
         ring-bell-function 'ignore
         use-dialog-box nil
         mode-line-format nil
@@ -64,12 +74,6 @@ Set the frame title to the buffer name.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
   (setq-default frame-title-format '("%b"))
-#+end_src
-
-Simplify the ~yes~ / ~no~ answers with simples ~y~ or ~n~.
-
-#+begin_src emacs-lisp :tangle ../early-init.el
-  (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
 Set the different fonts.
@@ -130,6 +134,7 @@ Install [[https://github.com/radian-software/straight.el][straight.el]] package 
   (setq straight-check-for-modifications '(check-on-save find-when-checking)
         straight-base-dir lec/var-directory
         straight-repository-branch "develop"
+        straight-vc-git-default-clone-depth 1
         comp-deferred-compilation-deny-list nil)
   (defvar bootstrap-version)
   (let ((bootstrap-file
