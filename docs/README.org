@@ -1128,7 +1128,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :after (org)
     :hook ((org-mode . org-bullets-mode))
     :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+    (org-bullets-bullet-list '("◉" "○" "●" "—" "–" "-")))
 
   (use-package mixed-pitch
     :hook
