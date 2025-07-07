@@ -1,10 +1,9 @@
-* Literate Emacs Configuration.
+* Literate Emacs Configuration
 
 This is a really /opinionated/ configuration of GNU/Emacs.
 
-** Emacs base configuration.
-
-*** Directory structure.
+** Emacs base configuration
+*** Directory structure
 
 The directory structure is set up in [[../init.el][init.el]].
 
@@ -14,7 +13,7 @@ The directory structure is set up in [[../init.el][init.el]].
 
 *** Configuration
 
-**** early-init.el file.
+**** early-init.el file
 
 Emacs 27.1 introduced early-init.el, which is run before init.el. Its main purpose here is to set GNU/Emacs with sane default to reflect the current configuration before loading everything. It prevent emacs to show in a non configured state.
 
@@ -108,7 +107,7 @@ Set the locale and input method.
   (setq default-input-method nil)
 #+end_src
 
-**** init.el file.
+**** init.el file
 
 If emacs is not at least in version 30, display an error message..
 
@@ -227,7 +226,7 @@ And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rew
   (load custom-file 'noerror 'nomessage)
 #+end_src
 
-*** Utility functions for GNU/Emacs configuration.
+*** Utility functions for GNU/Emacs configuration
 
 #+begin_src emacs-lisp
   (defun lec/reload-configuration ()
@@ -285,7 +284,7 @@ Set the terminal tab name when the buffer changes. The function checks if emacs 
   ;    :hook (after-init . benchmark-init/deactivate))
 #+end_src
 
-*** Avoid littering temporary files everywhere.
+*** Avoid littering temporary files everywhere
 
 #+begin_src emacs-lisp
   (use-package no-littering
@@ -294,8 +293,8 @@ Set the terminal tab name when the buffer changes. The function checks if emacs 
     (no-littering-var-directory lec/var-directory))
 #+end_src
 
-*** Base emacs configuration.
-**** Miscellaneous defaults.
+*** Base emacs configuration
+**** Miscellaneous defaults
 
 #+begin_src emacs-lisp
   (use-package emacs
@@ -365,7 +364,7 @@ Remember position in files.
     (save-place-forget-unreadable-files t))
 #+end_src
 
-**** Matching elements (parenthesis, quotes, etc).
+**** Matching elements (parenthesis, quotes, etc)
 
 [[https://github.com/Fanael/rainbow-delimiters][Rainbow-delimiters]] documentation.
 
@@ -377,7 +376,7 @@ Remember position in files.
     :hook (after-init . show-paren-mode))
 #+end_src
 
-**** Whitespaces.
+**** Whitespaces
 
 #+begin_src emacs-lisp
   (use-package whitespace
@@ -387,7 +386,7 @@ Remember position in files.
     (whitespace-style '(face trailing empty space-after-tab space-before-tab)))
 #+end_src
 
-**** Save commands history.
+**** Save commands history
 
 #+begin_src emacs-lisp
   (use-package savehist
@@ -398,7 +397,7 @@ Remember position in files.
     (savehist-additional-variables '(search-ring regexp-search-ring)))
 #+end_src
 
-**** Automatically revert buffers for files modified outside emacs.
+**** Automatically revert buffers for files modified outside emacs
 
 Unless the buffer was modified inside emacs, always refresh buffers to use the latest file version. Also modify dired
 to automatically refresh its content too.
@@ -410,7 +409,7 @@ to automatically refresh its content too.
     (global-auto-revert-non-file-buffers t))
 #+end_src
 
-**** Handle emacs backup files.
+**** Handle emacs backup files
 
 Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid polluting the source files directories.
 
@@ -464,7 +463,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
   (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
-**** Allow ANSI color codes in the compilation buffer.
+**** Allow ANSI color codes in the compilation buffer
 
 #+begin_src emacs-lisp
   (use-package ansi-color
@@ -473,9 +472,9 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (compilation-scroll-output 'first-error))
 #+end_src
 
-** Completion frameworks.
+** Completion frameworks
 
-*** Company.
+*** Company
 
 #+begin_src emacs-lisp
   (use-package company
@@ -504,7 +503,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (company-posframe-mode +1))
 #+end_src
 
-*** Helm.
+*** Helm
 
 #+begin_src emacs-lisp
   (defun lec/helm-hide-minibuffer-maybe ()
@@ -556,7 +555,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (helm-projectile-on))
 #+end_src
 
-*** Snippets.
+*** Snippets
 
 #+begin_src emacs-lisp
   (use-package yasnippet
@@ -568,9 +567,9 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     :after (yasnippet))
 #+end_src
 
-** Appearance.
+** Appearance
 
-*** Base theme.
+*** Base theme
 
 Base theme from [[https://github.com/doomemacs/themes][Doom themes]].
 
@@ -588,7 +587,7 @@ Base theme from [[https://github.com/doomemacs/themes][Doom themes]].
     (doom-themes-org-config))
 #+end_src
 
-*** Modeline.
+*** Modeline
 
 Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]].
 
@@ -597,7 +596,7 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
     :hook (after-init . doom-modeline-mode))
 #+end_src
 
-*** Visual enhancement.
+*** Visual enhancement
 
 #+begin_src emacs-lisp
   (use-package solaire-mode
@@ -607,7 +606,7 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
     (solaire-global-mode +1))
 #+end_src
 
-*** Font ligatures.
+*** Font ligatures
 
 #+begin_src emacs-lisp
   (use-package fira-code-mode
@@ -619,7 +618,7 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
     (fira-code-mode-disabled-ligatures '("[]" "</" "/>" "x")))
 #+end_src
 
-*** :sparkles: Emoji.
+*** Emoji 🙂✨
 
 [[https://github.com/iqbalansari/emacs-emojify][Emojify]] documentation.
 
@@ -628,7 +627,7 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
     :hook (after-init . global-emojify-mode))
 #+end_src
 
-*** Icons.
+*** Icons
 
 Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons]].
 
@@ -652,14 +651,14 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :hook (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
-*** Line numbers for programming modes.
+*** Line numbers for programming modes
 
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (setq linum-format "%3d ")
 #+end_src
 
-*** Display colors for hex, rgb, and other common colors codes.
+*** Display colors for hex, rgb, and other common colors codes
 
 [[http://elpa.gnu.org/packages/rainbow-mode.html][Rainbow-mode]] documentation.
 
@@ -669,9 +668,9 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
            (text-mode . rainbow-mode)))
 #+end_src
 
-** Utility packages.
+** Utility packages
 
-*** Editorconfig.
+*** Editorconfig
 
 #+begin_src emacs-lisp
   (use-package editorconfig
@@ -680,7 +679,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
            (prog-mode . editorconfig-mode)))
 #+end_src
 
-*** Dashboard buffer at launch.
+*** Dashboard buffer at launch
 
 [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]] documentation.
 
@@ -711,7 +710,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
                         (projects . 10))))
 #+end_src
 
-*** Garbage collection magic.
+*** Garbage collection magic
 
 [[https://github.com/emacsmirror/gcmh][GCMH]] documentation.
 
@@ -808,7 +807,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :defer t)
 #+end_src
 
-*** Manage processes.
+*** Manage processes
 
 #+begin_src emacs-lisp
   (use-package proced
@@ -816,7 +815,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :custom (proced-auto-update-flag t))
 #+end_src
 
-*** Navigation.
+*** Navigation
 
 #+begin_src emacs-lisp
   (use-package treemacs
@@ -921,7 +920,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
   ;  :config (treemacs-set-scope-type 'Perspectives))
 #+end_src
 
-*** PDF viewer.
+*** PDF viewer
 
 #+begin_src emacs-lisp
   (use-package pdf-tools
@@ -938,7 +937,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :hook (pdf-view-mode . pdf-view-restore))
 #+end_src
 
-*** Project managment.
+*** Project managment
 
 #+begin_src emacs-lisp
   (use-package projectile
@@ -949,7 +948,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (projectile-mode +1))
 #+end_src
 
-*** Show emacs shortcuts on key pressed.
+*** Show emacs shortcuts on key pressed
 
 [[https://github.com/justbur/emacs-which-key][Which-key]] documentation.
 
@@ -963,7 +962,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (setq which-key-idle-delay 1))
 #+end_src
 
-*** Syntax and spell checking.
+*** Syntax and spell checking
 
 #+begin_src emacs-lisp
   (use-package flycheck
@@ -997,7 +996,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :commands (vterm))
 #+end_src
 
-*** Undo tree.
+*** Undo tree
 
 #+begin_src emacs-lisp
   (defvar lec/--undo-history-directory (file-name-concat lec/var-directory "undos/")
@@ -1014,7 +1013,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (undo-tree-visualizer-lazy-drawing 1000))
 #+end_src
 
-*** Versioning.
+*** Versioning
 
 #+begin_src emacs-lisp
   (use-package magit
@@ -1081,9 +1080,9 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (set-face-foreground 'git-gutter-fr:deleted  "#FB2874"))
 #+end_src
 
-** Major modes configuration.
+** Major modes configuration
 
-*** C/C++.
+*** C/C++
 
 #+begin_src emacs-lisp
   (use-package cc-mode
@@ -1104,14 +1103,14 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :defer t)
 #+end_src
 
-*** Javascript.
+*** Javascript
 
 #+begin_src emacs-lisp
   (use-package js2-mode
     :defer t)
 #+end_src
 
-*** Org.
+*** Org
 
 [[https://orgmode.org/][Org-mode]] documentation.
 
@@ -1154,6 +1153,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (org-mode . mixed-pitch-mode))
 
   (use-package visual-fill-column
+    :if window-system
     :hook ((org-mode . visual-fill-column-mode)
            (org-mode . visual-line-mode))
     :custom
@@ -1162,7 +1162,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (visual-fill-column-center-text t))
 #+end_src
 
-*** PHP.
+*** PHP
 
 #+begin_src emacs-lisp
   (use-package php-mode
@@ -1186,7 +1186,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :after (php-mode))
 #+end_src
 
-*** Rust.
+*** Rust
 
 #+begin_src emacs-lisp
   (use-package rust-mode
@@ -1213,14 +1213,14 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
       :hook (rust-mode . cargo-minor-mode))
 #+end_src
 
-*** TOML.
+*** TOML
 
 #+begin_src emacs-lisp
   (use-package toml-mode
     :mode ("\\.toml$" . toml-mode))
 #+end_src
 
-*** Typescript.
+*** Typescript
 
 #+begin_src emacs-lisp
   (use-package typescript-mode
@@ -1228,7 +1228,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :hook (typescript-mode . lsp-deferred))
 #+end_src
 
-*** Web.
+*** Web
 
 #+begin_src emacs-lisp
   (use-package web-mode
@@ -1245,7 +1245,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
   (add-hook 'vue-mode-hook #'lsp-deferred)
 #+end_src
 
-*** YAML.
+*** YAML
 
 #+begin_src emacs-lisp
   (use-package yaml-mode
