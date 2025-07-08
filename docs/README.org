@@ -155,6 +155,7 @@ Install [[https://github.com/jwiegley/use-package][use-package]] to install [[ht
 #+begin_src emacs-lisp :tangle ../init.el
   (straight-use-package 'use-package)
   (setq use-package-always-ensure t
+        use-package-always-defer t
         straight-use-package-by-default t)
 #+end_src
 
@@ -169,8 +170,9 @@ Enable benchmarking early.
 Install latest org mode before using it.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (use-package org
-    :defer t)
+  (when (file-exists-p lec/tangled-doc-file)
+      (use-package org)
+    (use-package org :demand t))
 #+end_src
 
 Utilities functions related to the tangling of the files. Add hooks to tangle configuration when the documentation is modified. Also add headers to specify that these files should not be modified directly as they get rewritten each time the documentation is modified.

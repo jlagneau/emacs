@@ -40,14 +40,16 @@
 
 (straight-use-package 'use-package)
 (setq use-package-always-ensure t
+      use-package-always-defer t
       straight-use-package-by-default t)
 
 (use-package benchmark-init
   :hook (after-init . benchmark-init/deactivate)
   :init (benchmark-init/activate))
 
-(use-package org
-  :defer t)
+(when (file-exists-p lec/tangled-doc-file)
+    (use-package org)
+  (use-package org :demand t))
 
 (defun lec/--tangle-documentation ()
   "Tangle the org file given to cache directory after renaming it."
