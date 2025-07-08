@@ -260,12 +260,8 @@ Set the terminal tab name when the buffer changes. The function checks if emacs 
       (let ((current-buffer-name (buffer-name)))
         (when (and (not (string= current-buffer-name lec/--last-buffer-name))
                    (not (string= current-buffer-name "")))
-          (let ((exit-code
-                 (shell-command
-                  (format "wezterm cli set-tab-title '%s'" current-buffer-name))))
-            (when (not (zerop exit-code))
-              (message "Failed to set WezTerm tab title: %s" current-buffer-name)))
-          (setq lec/--last-buffer-name current-buffer-name)))))
+          (shell-command (format "wezterm cli set-tab-title '%s'" current-buffer-name)))
+          (setq lec/--last-buffer-name current-buffer-name))))
 
   (add-hook 'window-configuration-change-hook 'lec/--set-wezterm-tab-title)
 #+end_src
