@@ -636,12 +636,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (nerd-icons-font-family "Symbols Nerd Font Mono"))
 #+end_src
 
-#+begin_src emacs-lisp
-  (use-package nerd-icons-dired
-    :after (nerd-icons)
-    :hook (dired-mode . nerd-icons-dired-mode))
-#+end_src
-
 *** Line numbers for programming modes
 
 #+begin_src emacs-lisp
