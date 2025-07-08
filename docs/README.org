@@ -39,6 +39,7 @@ Disable a lot of unused functions and features to speed things up, and set up sa
         package-quickstart nil
         inhibit-startup-message t
         inhibit-startup-screen t
+        server-client-instructions nil
         use-short-answers t
         auto-mode-case-fold nil
         ffap-machine-p-known 'reject

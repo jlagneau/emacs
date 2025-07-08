@@ -14,12 +14,13 @@
       package-quickstart nil
       inhibit-startup-message t
       inhibit-startup-screen t
+      server-client-instructions nil
       use-short-answers t
       auto-mode-case-fold nil
       ffap-machine-p-known 'reject
       fast-but-imprecise-scrolling t
       frame-inhibit-implied-resize t
-      idle-update-delay 1.0
+      which-func-update-delay 1.0
       inhibit-compacting-font-caches t
       redisplay-skip-fontification-on-input t
       command-line-x-option-alist nil
