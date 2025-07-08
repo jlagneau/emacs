@@ -276,6 +276,7 @@ Set the terminal tab name when the buffer changes. The function checks if emacs 
 
 #+begin_src emacs-lisp
   (use-package no-littering
+    :demand t
     :custom
     (no-littering-etc-directory lec/etc-directory)
     (no-littering-var-directory lec/var-directory))
@@ -563,6 +564,7 @@ Base theme from [[https://github.com/doomemacs/themes][Doom themes]].
 
 #+begin_src emacs-lisp
   (use-package doom-themes
+    :demand t
     :config
     ;; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
@@ -588,6 +590,7 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 
 #+begin_src emacs-lisp
   (use-package solaire-mode
+    :demand t
     :config
     (add-to-list 'solaire-mode-themes-to-face-swap "^doom-")
     (setq solaire-mode-auto-swap-bg t)
@@ -711,7 +714,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
-    :defer t
     :init
     ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
     (setq lsp-keymap-prefix "C-c l")
@@ -791,15 +793,13 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 [[https://github.com/cbowdon/daemons.el][Daemons.el]] documentation.
 
 #+begin_src emacs-lisp
-  (use-package daemons
-    :defer t)
+  (use-package daemons)
 #+end_src
 
 *** Manage processes
 
 #+begin_src emacs-lisp
   (use-package proced
-    :defer t
     :custom (proced-auto-update-flag t))
 #+end_src
 
@@ -910,7 +910,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 
 #+begin_src emacs-lisp
   (use-package pdf-tools
-    :defer t
     :hook ((pdf-tools-enabled . pdf-view-themed-minor-mode))
     :custom
     (pdf-view-display-size 'fit-page)
@@ -984,7 +983,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 
 #+begin_src emacs-lisp
   (use-package vterm
-    :defer t
     :commands (vterm))
 #+end_src
 
@@ -1009,6 +1007,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 
 #+begin_src emacs-lisp
   (use-package magit
+    :defer 2
     :commands magit-status
     :custom
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
@@ -1025,7 +1024,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
      '(magit-todos-keywords (list "TODO" "FIXME"))))
 
   (use-package blamer
-    :defer t
     :custom
     (blamer-idle-time 0.5)
     (blamer-min-offset 2)
@@ -1081,8 +1079,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (lsp-clangd-version "20.1.7")
     (lsp-clients-clangd-args '("--experimental-modules-support" "--clang-tidy")))
 
-  (use-package cmake-mode
-    :defer t)
+  (use-package cmake-mode)
 #+end_src
 
 *** Org
@@ -1091,7 +1088,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 
 #+begin_src emacs-lisp
   (use-package org
-    :defer t
     :custom
     (org-adapt-indentation nil)
     (org-hide-leading-stars t)
@@ -1140,7 +1136,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 
 #+begin_src emacs-lisp
   (use-package rust-mode
-    :defer t
     :hook ((rust-mode . lsp-deferred))
     :custom
     (lsp-rust-server 'rust-analyzer)
@@ -1167,8 +1162,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 **** Fish shell
 
 #+begin_src emacs-lisp
-  (use-package fish-mode
-    :defer t)
+  (use-package fish-mode)
 #+end_src
 
 *** TOML
@@ -1199,7 +1193,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 
 #+begin_src emacs-lisp
   (use-package php-mode
-    :defer t
     :hook ((php-mode . lsp-deferred))
     :custom
     (lsp-intelephense-clear-cache t)
@@ -1222,15 +1215,13 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 **** Javascript
 
 #+begin_src emacs-lisp
-  (use-package js2-mode
-    :defer t)
+  (use-package js2-mode)
 #+end_src
 
 **** Typescript
 
 #+begin_src emacs-lisp
   (use-package typescript-mode
-    :defer t
     :hook (typescript-mode . lsp-deferred))
 #+end_src
 
