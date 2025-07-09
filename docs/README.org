@@ -799,6 +799,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 #+begin_src emacs-lisp
   (use-package dirvish
     :demand t
+    :bind (("<mouse-1>" . dirvish-subtree-toggle-or-open))
     :custom
     (dirvish-attributes
      '(vc-state file-size git-msg subtree-state all-the-icons collapse file-time))
@@ -806,10 +807,9 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
      "-l --almost-all --human-readable --group-directories-first --no-group")
     (dirvish-side-attributes '(vc-state subtree-state nerd-icons))
     (dirvish-side-mode-line-format nil)
-    :config
+    :init
     (dirvish-override-dired-mode)
-    (dirvish-peek-mode)
-    (dirvish-side-follow-mode))
+    (dirvish-peek-mode))
 #+end_src
 
 *** PDF viewer
