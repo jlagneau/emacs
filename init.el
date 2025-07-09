@@ -14,7 +14,7 @@
 (defconst lec/var-directory (file-name-concat user-emacs-directory "var")
   "Directory where temporary files and packages resources goes.")
 
-(defconst lec/doc-file (file-name-concat lec/doc-directory "README.org")
+(defconst lec/doc-file (file-name-concat lec/doc-directory "conf.org")
   "Documentation file for the configuration.")
 
 (defconst lec/tangled-doc-file (file-name-concat lec/var-directory "tangled-conf.el")
