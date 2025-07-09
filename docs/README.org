@@ -381,10 +381,11 @@ Remember position in files.
 
 #+begin_src emacs-lisp
   (use-package savehist
-    :hook (after-init . savehist-mode)
+    :demand t
+    :init (savehist-mode)
     :custom
-    (history-length 30)
-    (savehist-autosave-interval 60)
+    (history-length 100)
+    (savehist-autosave-interval 200)
     (savehist-additional-variables '(search-ring regexp-search-ring)))
 #+end_src
 
