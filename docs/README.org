@@ -1,13 +1,21 @@
+[[./img/logo.png]]
+
 * Literate Emacs Configuration
 
 This is a really /opinionated/ configuration of GNU/Emacs.
+
+** Screenshots
+
+[[./img/Screenshot_20250709_082009.png]]
 
 ** Emacs base configuration
 *** Directory structure
 
 The directory structure is set up in [[../init.el][init.el]].
 
-- ~lec/doc-dir~ is the directory where the documentation goes.
+- ~lec/doc-dir~ for the documentation.
+- ~lec/etc-directory~ for the additional configuration.
+- ~lec/var-directory~ for the packages data.
 - ~lec/doc-file~ is this actual file.
 - ~lec/tangled-doc-file~ is the output file for all tangled blocks from ~lec/doc-file~.
 
