@@ -179,9 +179,7 @@ Enable benchmarking early.
 Install latest org mode before using it.
 
 #+begin_src emacs-lisp :tangle ../init.el
-  (when (file-exists-p lec/tangled-doc-file)
-      (use-package org)
-    (use-package org :demand t))
+  (use-package org)
 #+end_src
 
 Utilities functions related to the tangling of the files. Add hooks to tangle configuration when the documentation is modified. Also add headers to specify that these files should not be modified directly as they get rewritten each time the documentation is modified.
@@ -189,7 +187,7 @@ Utilities functions related to the tangling of the files. Add hooks to tangle co
 #+begin_src emacs-lisp :tangle ../init.el
   (defun lec/--tangle-documentation ()
     "Tangle the org file given to cache directory after renaming it."
-    (interactive)
+    (require 'org)
     (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 
   (defun lec/--editing-documentation ()

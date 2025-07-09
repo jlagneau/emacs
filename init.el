@@ -47,13 +47,11 @@
   :hook (after-init . benchmark-init/deactivate)
   :init (benchmark-init/activate))
 
-(when (file-exists-p lec/tangled-doc-file)
-    (use-package org)
-  (use-package org :demand t))
+(use-package org)
 
 (defun lec/--tangle-documentation ()
   "Tangle the org file given to cache directory after renaming it."
-  (interactive)
+  (require 'org)
   (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 
 (defun lec/--editing-documentation ()
