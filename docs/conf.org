@@ -1,4 +1,3 @@
-#+title: conf
 #+startup: inlineimages showall
 * Emacs configuration
 ** Directory structure

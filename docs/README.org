@@ -1,4 +1,3 @@
-#+title: README
 #+startup: inlineimages showall
 #+attr_org: :align center
 [[./img/logo.png]]
