@@ -907,7 +907,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 
 #+begin_src emacs-lisp
   (use-package magit
-    :defer 2
     :commands magit-status
     :custom
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
