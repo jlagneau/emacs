@@ -459,7 +459,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 
 ** Completion frameworks
 
-*** Company
+*** Code completion
 
 #+begin_src emacs-lisp
   (use-package company
@@ -488,7 +488,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (company-posframe-mode +1))
 #+end_src
 
-*** Helm
+*** Emacs completion
 
 #+begin_src emacs-lisp
   (defun lec/helm-hide-minibuffer-maybe ()
