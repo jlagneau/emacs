@@ -963,6 +963,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     (set-face-background 'git-gutter:deleted "#FB2874"))
 
   (use-package git-gutter-fringe
+    :demand t
     :if window-system
     :after (git-gutter)
     :config
