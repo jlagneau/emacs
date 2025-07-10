@@ -723,13 +723,74 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 *** Font ligatures
 
 #+begin_src emacs-lisp
-  (use-package fira-code-mode
-    :if window-system
-    :init (fira-code-mode-set-font)
-    :hook ((org-mode . fira-code-mode)
-           (prog-mode . fira-code-mode))
-    :custom
-    (fira-code-mode-disabled-ligatures '("[]" "</" "/>" "x")))
+  (use-package ligature
+    :demand t
+    :config
+    ;; Enable the "www" ligature in every possible major mode
+    (ligature-set-ligatures 't '("www"))
+    ;; Enable XML-like ligatures for html and web-mode
+    (ligature-set-ligatures
+     '(html-mode nxml-mode web-mode)
+     '("<!--" "-->" "</>" "</" "/>"))
+    ;; Enable all Cascadia and Fira Code ligatures in programming modes
+    (ligature-set-ligatures
+     'prog-mode
+     '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~
+       ;; =:= =!=
+       ("=" (rx (+ (or ">" "<" "|" "/" "~" ":" "!" "="))))
+       ;; ;; ;;;
+       (";" (rx (+ ";")))
+       ;; && &&&
+       ("&" (rx (+ "&")))
+       ;; !! !!! !. !: !!. != !== !~
+       ("!" (rx (+ (or "=" "!" "\." ":" "~"))))
+       ;; ?? ??? ?:  ?=  ?.
+       ("?" (rx (or ":" "=" "\." (+ "?"))))
+       ;; %% %%%
+       ("%" (rx (+ "%")))
+       ;; |> ||> |||> ||||> |] |} || ||| |-> ||-||
+       ;; |->>-||-<<-| |- |== ||=||
+       ;; |==>>==<<==<=>==//==/=!==:===>
+       ("|" (rx (+ (or ">" "<" "|" "/" ":" "!" "}" "\]" "-" "=" ))))
+       ;; \\ \\\ \/
+       ("\\" (rx (or "/" (+ "\\"))))
+       ;; ++ +++ ++++ +>
+       ("+" (rx (or ">" (+ "+"))))
+       ;; :: ::: :::: :> :< := :// ::=
+       (":" (rx (or ">" "<" "=" "//" ":=" (+ ":"))))
+       ;; // /// //// /\ /* /> /===:===!=//===>>==>==/
+       ("/" (rx (+ (or ">"  "<" "|" "/" "\\" "\*" ":" "!" "="))))
+       ;; .. ... .... .= .- .? ..= ..<
+       ("\." (rx (or "=" "-" "\?" "\.=" "\.<" (+ "\."))))
+       ;; -- --- ---- -~ -> ->> -| -|->-->>->--<<-|
+       ("-" (rx (+ (or ">" "<" "|" "~" "-"))))
+       ;; *> */ *)  ** *** ****
+       ("*" (rx (or ">" "/" ")" (+ "*"))))
+       ;; www wwww
+       ("w" (rx (+ "w")))
+       ;; <> <!-- <|> <: <~ <~> <~~ <+ <* <$ </  <+> <*>
+       ;; <$> </> <|  <||  <||| <|||| <- <-| <-<<-|-> <->>
+       ;; <<-> <= <=> <<==<<==>=|=>==/==//=!==:=>
+       ;; << <<< <<<<
+       ("<" (rx (+ (or "\+" "\*" "\$" "<" ">" ":" "~"  "!" "-"  "/" "|" "="))))
+       ;; >: >- >>- >--|-> >>-|-> >= >== >>== >=|=:=>>
+       ;; >> >>> >>>>
+       (">" (rx (+ (or ">" "<" "|" "/" ":" "=" "-"))))
+       ;; #: #= #! #( #? #[ #{ #_ #_( ## ### #####
+       ("#" (rx (or ":" "=" "!" "(" "\?" "\[" "{" "_(" "_" (+ "#"))))
+       ;; ~~ ~~~ ~=  ~-  ~@ ~> ~~>
+       ("~" (rx (or ">" "=" "-" "@" "~>" (+ "~"))))
+       ;; __ ___ ____ _|_ __|____|_
+       ("_" (rx (+ (or "_" "|"))))
+       ;; Fira code: 0xFF 0x12
+       ("0" (rx (and "x" (+ (in "A-F" "a-f" "0-9")))))
+       ;; Fira code:
+       "Fl"  "Tl"  "fi"  "fj"  "fl"  "ft"
+       ;; The few not covered by the regexps.
+       "{|"  "[|"  "]#"  "(*"  "}#"  "$>"  "^="))
+    ;; Enables ligature checks globally in all buffers. You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode t))
 #+end_src
 
 *** Emoji 🙂✨
