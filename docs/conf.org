@@ -34,6 +34,7 @@ Disable the menu bar, the tool bar, and the scroll bars.
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
+  (tooltip-mode -1)
 #+end_src
 
 Disable a lot of unused functions and features to speed things up, and set up sane defaults for appearance, garbage collection, process output, native JIT compilation, advice redefinition, and warning minimum level.
@@ -41,10 +42,14 @@ Disable a lot of unused functions and features to speed things up, and set up sa
 #+begin_src emacs-lisp :tangle ../early-init.el
   (setq package-enable-at-startup nil
         package-quickstart nil
+        confirm-kill-processes nil
         inhibit-startup-message t
         inhibit-startup-screen t
         server-client-instructions nil
         use-short-answers t
+        set-fringe-mode 10
+        column-number-mode t
+        size-indication-mode t
         auto-mode-case-fold nil
         ffap-machine-p-known 'reject
         fast-but-imprecise-scrolling t
@@ -62,6 +67,7 @@ Disable a lot of unused functions and features to speed things up, and set up sa
         gc-cons-threshold (* 100 1024 1024) ; 100 MiB
         gc-cons-percentage 0.6
         read-process-output-max (* 5 1024 1024) ; 5 MiB
+        large-file-warning-threshold (* 100 1024 1024) ; 100 MiB
         load-prefer-newer t
         native-comp-jit-compilation t
         ad-redefinition-action 'accept
@@ -275,25 +281,6 @@ Set the terminal tab name when the buffer changes. The function checks if emacs 
 *** Base emacs configuration
 **** Miscellaneous defaults
 
-#+begin_src emacs-lisp
-  (use-package emacs
-    :custom
-    (inibit-startup-message +1)
-    (ring-bell-function 'ignore)
-    (large-file-warning-threshold 100000000)
-    (load-prefer-newer +1)
-    (confirm-kill-processes nil)
-    (use-dialog-box nil)
-    :config
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (menu-bar-mode -1)
-    (tooltip-mode -1)
-    (set-fringe-mode 10)
-    (column-number-mode +1)
-    (size-indication-mode +1))
-#+end_src
-
 Highlight the current line.
 
 #+begin_src emacs-lisp
@@ -435,12 +422,6 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     (add-to-list 'recentf-exclude
                  (recentf-expand-file-name
                   (file-name-concat user-emacs-directory "early-init.el"))))
-#+end_src
-
-**** Emacs Yes or No prompt
-
-#+begin_src emacs-lisp
-  (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
 **** Allow ANSI color codes in the compilation buffer
