@@ -1094,7 +1094,13 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :config
     (setq magit-todos-recursive t
           magit-todos-depth 10
-          magit-todos-exclude-globs '(".git/" ".cache/*" "vendor/*" "node_modules/*"))
+          magit-todos-exclude-globs
+  	'(".git/"
+  	  ".cache/*"
+            "var/*"
+  	  "vendor/*"
+  	  "node_modules/*"
+  	  ))
     (custom-set-variables
      '(magit-todos-keywords (list "TODO" "FIXME"))))
 
