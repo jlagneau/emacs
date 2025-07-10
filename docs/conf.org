@@ -799,8 +799,10 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 *** Line numbers for programming modes
 
 #+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (setq linum-format "%3d ")
+  (use-package emacs
+    :hook (prog-mode . display-line-numbers-mode)
+    :custom
+    (linum-format "%3d "))
 #+end_src
 
 *** Display colors for hex, rgb, and other common colors codes
