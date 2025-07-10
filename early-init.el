@@ -9,13 +9,18 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(tooltip-mode -1)
 
 (setq package-enable-at-startup nil
       package-quickstart nil
+      confirm-kill-processes nil
       inhibit-startup-message t
       inhibit-startup-screen t
       server-client-instructions nil
       use-short-answers t
+      set-fringe-mode 10
+      column-number-mode t
+      size-indication-mode t
       auto-mode-case-fold nil
       ffap-machine-p-known 'reject
       fast-but-imprecise-scrolling t
@@ -33,6 +38,7 @@
       gc-cons-threshold (* 100 1024 1024) ; 100 MiB
       gc-cons-percentage 0.6
       read-process-output-max (* 5 1024 1024) ; 5 MiB
+      large-file-warning-threshold (* 100 1024 1024) ; 100 MiB
       load-prefer-newer t
       native-comp-jit-compilation t
       ad-redefinition-action 'accept
@@ -42,10 +48,6 @@
 (set-language-environment "UTF-8")
 
 (setq-default frame-title-format '("%b"))
-
-(set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 100)
-(set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font" :height 100)
-(set-face-attribute 'variable-pitch nil :font "NotoSansDisplay Nerd Font" :height 100)
 
 (add-to-list 'default-frame-alist '(foreground-color . "#d6d6d4"))
 (add-to-list 'default-frame-alist '(background-color . "#1c1e1f"))
