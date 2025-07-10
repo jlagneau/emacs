@@ -1,5 +1,10 @@
 #+startup: inlineimages showall
 * Emacs configuration
+
+This is a Literate Emacs Configuration (LEC). The name of the symbols are prefixed with ~lec/~ as a namespace. Symbols starting with ~--~ after the namespace are used internally and not interactive. The goal is to have a really fast editor, as close as possible from vanilla Emacs, with a nice preset of packages on top, for work. Appearance is also a concern and it should look and feel as modern as possible without breaking the already established goals.
+
+FIXME: Working in deamon mode currently cause some issues as the initialization of the package is done in the command line, and some package needs to recognize if the frame was opened in a terminal or in a GUI window.
+
 ** Directory structure
 
 The directory structure is set up in [[../init.el][init.el]].
@@ -13,9 +18,9 @@ The directory structure is set up in [[../init.el][init.el]].
 ** Configuration
 *** early-init.el file
 
-GNU/Emacs 27.1 introduced early-init.el, which is run before init.el. Its main purpose here is to set GNU/Emacs with sane default to reflect the current configuration before loading everything. It prevent emacs to show in a non configured state.
+Emacs 27.1 introduced early-init.el, which is run before init.el. Its main purpose here is to set GNU/Emacs with sane default to reflect the current configuration before loading everything. It prevent emacs to show in a non configured state.
 
-As per GNU/Emacs  >= 28, native compilation can be enabled, resulting in ~*.eln~  files populating a directory at the root of the configuration directory. Redirect eln-cache files into an appropriate directory.
+As per Emacs  >= 28, native compilation can be enabled, resulting in ~*.eln~  files populating a directory at the root of the configuration directory. Redirect eln-cache files into an appropriate directory.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
   (when (fboundp 'startup-redirect-eln-cache)
@@ -31,7 +36,7 @@ Disable the menu bar, the tool bar, and the scroll bars.
   (scroll-bar-mode -1)
 #+end_src
 
-Disable a lot of unused functions and features to speed things up, and set up sane defaults for garbage collection, process output, native JIT compilation, advice redefinition, and warning minimum level.
+Disable a lot of unused functions and features to speed things up, and set up sane defaults for appearance, garbage collection, process output, native JIT compilation, advice redefinition, and warning minimum level.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
   (setq package-enable-at-startup nil
@@ -212,7 +217,7 @@ And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rew
   (load custom-file 'noerror 'nomessage)
 #+end_src
 
-*** Utility functions for GNU/Emacs configuration
+*** Utility functions for Emacs configuration
 
 #+begin_src emacs-lisp
   (defun lec/reload-configuration ()
@@ -448,7 +453,6 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 #+end_src
 
 ** Completion frameworks
-
 *** Code completion
 
 #+begin_src emacs-lisp
@@ -674,7 +678,6 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
 #+end_src
 
 ** Appearance
-
 *** Base theme
 
 Base theme from [[https://github.com/doomemacs/themes][Doom themes]].
@@ -830,7 +833,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 #+end_src
 
 ** Utility packages
-
 *** Editorconfig
 
 #+begin_src emacs-lisp
@@ -859,7 +861,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
   ;        dashboard-navigator-buttons
   ;        `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
   ;           (,nil "Update packages" "Update all packages" (lambda (&rest _) (straight-pull-all)) warning)
-  ;           (,nil "Reload configuration" "Reload GNU/Emacs configuration" (lambda (&rest _) (load-file (file-name-concat user-emacs-directory "init.el"))) warning))
+  ;           (,nil "Reload configuration" "Reload Emacs configuration" (lambda (&rest _) (load-file (file-name-concat user-emacs-directory "init.el"))) warning))
   ;          ((,nil "System services" "Manage services" (lambda (&rest _) (daemons)) error)
   ;           (,nil "System processes" "Manage processes" (lambda (&rest _) (proced)) error)))
      (dashboard-show-shortcuts nil)
@@ -997,6 +999,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :after pdf-tools
     :hook (pdf-view-mode . pdf-view-restore))
 #+end_src
+
 *** Profiling start-up
 
 #+begin_src emacs-lisp
@@ -1151,7 +1154,6 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 #+end_src
 
 ** Major modes configuration
-
 *** C/C++
 
 #+begin_src emacs-lisp
