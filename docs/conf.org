@@ -76,14 +76,6 @@ Set the frame title to the buffer name.
   (setq-default frame-title-format '("%b"))
 #+end_src
 
-Set the different fonts.
-
-#+begin_src emacs-lisp :tangle ../early-init.el
-  (set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 100)
-  (set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font" :height 100)
-  (set-face-attribute 'variable-pitch nil :font "NotoSansDisplay Nerd Font" :height 100)
-#+end_src
-
 Change the colors for the background and foreground to respect the theme in use.
 
 #+begin_src emacs-lisp :tangle ../early-init.el
