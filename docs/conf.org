@@ -702,15 +702,11 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
   (use-package ligature
     :demand t
     :config
-    ;; Enable the "www" ligature in every possible major mode
-    (ligature-set-ligatures 't '("www"))
-    ;; Enable XML-like ligatures for html and web-mode
+    ;; Disable ligatures for merge markers in every possible major modes
+    (ligature-set-ligatures 't '("<<<<<<<" "=======" "|||||||" ">>>>>>>"))
+    ;; Enable all interesting ligatures in every possible major modes
     (ligature-set-ligatures
-     '(html-mode nxml-mode web-mode)
-     '("<!--" "-->" "</>" "</" "/>"))
-    ;; Enable all Cascadia and Fira Code ligatures in programming modes
-    (ligature-set-ligatures
-     'prog-mode
+     't
      '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~
        ;; =:= =!=
        ("=" (rx (+ (or ">" "<" "|" "/" "~" ":" "!" "="))))
@@ -741,9 +737,9 @@ Modeline based on [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
        ;; -- --- ---- -~ -> ->> -| -|->-->>->--<<-|
        ("-" (rx (+ (or ">" "<" "|" "~" "-"))))
        ;; *> */ *)  ** *** ****
-       ("*" (rx (or ">" "/" ")" (+ "*"))))
+       ; ("*" (rx (or ">" "/" ")" (+ "*"))))
        ;; www wwww
-       ("w" (rx (+ "w")))
+       ; ("w" (rx (+ "w")))
        ;; <> <!-- <|> <: <~ <~> <~~ <+ <* <$ </  <+> <*>
        ;; <$> </> <|  <||  <||| <|||| <- <-| <-<<-|-> <->>
        ;; <<-> <= <=> <<==<<==>=|=>==/==//=!==:=>
