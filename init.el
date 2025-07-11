@@ -50,7 +50,7 @@
 (use-package org)
 
 (defun lec/--tangle-documentation ()
-  "Tangle the org file given to cache directory after renaming it."
+  "Tangle the `org' file given to cache directory after renaming it."
   (require 'org)
   (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 

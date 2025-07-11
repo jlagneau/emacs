@@ -180,7 +180,7 @@ Utilities functions related to the tangling of the files. Add hooks to tangle co
 
 #+begin_src emacs-lisp :tangle ../init.el
   (defun lec/--tangle-documentation ()
-    "Tangle the org file given to cache directory after renaming it."
+    "Tangle the `org' file given to cache directory after renaming it."
     (require 'org)
     (org-babel-tangle-file lec/doc-file lec/tangled-doc-file))
 
@@ -232,14 +232,14 @@ And finally, specify a ~custom-file~ to load to avoid ~Customize~ options to rew
     (load-file user-init-file))
 
   (defun lec/--file-contents (filename)
-    "Return the contents of FILENAME."
+    "Return the contents of `FILENAME'."
     (with-temp-buffer
       (insert-file-contents filename)
       (buffer-string)))
 
   (defun lec/--bufferp (buffer)
-    "Predicate that return nil if the buffer-name start with one of the things
-  to exclude, else t."
+    "Predicate that return `nil' if the buffer-name start with one of the things
+  to exclude, else `t'."
     (cond ((string-match "^*" (buffer-name buffer)) nil)
           ((string-match "^magit" (buffer-name buffer)) nil)
           (t t)))
