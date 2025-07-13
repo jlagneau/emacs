@@ -3,7 +3,8 @@
 
 This is a Literate Emacs Configuration (LEC). The name of the symbols are prefixed with ~lec/~ as a namespace. Symbols starting with ~--~ after the namespace are used internally and not interactive. The goal is to have a really fast editor, as close as possible from vanilla Emacs, with a nice preset of packages on top, for work. Appearance is also a concern and it should look and feel as modern as possible without breaking the already established goals.
 
-FIXME: Working in deamon mode currently cause some issues as the initialization of the package is done in the command line, and some package needs to recognize if the frame was opened in a terminal or in a GUI window.
+FIXME: Working in deamon mode currently cause some issues.
+The initialization of the package is done in the command line, and some package needs to recognize if the frame was opened in a terminal or in a GUI window.
 
 ** Directory structure
 
@@ -836,7 +837,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :custom
     (dashboard-center-content t)
     (dashboard-startup-banner 'logo)
-  ;; FIXME: navitagor is broken.
+  ;; FIXME: Dashboard navitagor is broken.
   ;        dashboard-set-navigator t
   ;        dashboard-navigator-buttons
   ;        `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
