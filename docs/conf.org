@@ -416,6 +416,7 @@ Put emacs backup and auto save files (~*~~ and ~#*#~) in cached folder to avoid 
     :config
     (add-to-list 'recentf-exclude (recentf-expand-file-name lec/var-directory))
     (add-to-list 'recentf-exclude (recentf-expand-file-name lec/etc-directory))
+    ;; Exclude `init.el' and `early-init.el' because they are generated automatically
     (add-to-list 'recentf-exclude
                  (recentf-expand-file-name
                   (file-name-concat user-emacs-directory "init.el")))
@@ -835,7 +836,7 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
     :custom
     (dashboard-center-content t)
     (dashboard-startup-banner 'logo)
-  ;; FIXME navitagor is broken.
+  ;; FIXME: navitagor is broken.
   ;        dashboard-set-navigator t
   ;        dashboard-navigator-buttons
   ;        `(((,nil "Benchmark" "Show benchmark tree" (lambda (&rest _) (benchmark-init/show-durations-tree)))
