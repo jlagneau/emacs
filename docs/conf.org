@@ -951,17 +951,45 @@ Documentation for [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons
 #+begin_src emacs-lisp
   (use-package dirvish
     :demand t
-    :bind (("<mouse-1>" . dirvish-subtree-toggle-or-open))
+    :after nerd-icons
+    :bind (:map dirvish-mode-map
+           ("<mouse-1>" . dirvish-subtree-toggle-or-open)
+           ("<mouse-2>" . dired-mouse-find-file-other-window)
+           ("<mouse-3>" . dired-mouse-find-file)
+           ([remap dired-sort-toggle-or-edit] . dirvish-quicksort)
+           ([remap dired-do-redisplay] . dirvish-ls-switches-menu)
+           ([remap dired-do-copy] . dirvish-yank-menu)
+           ("?"   . dirvish-dispatch)
+           ("q"   . dirvish-quit)
+           ("a"   . dirvish-quick-access)
+           ("f"   . dirvish-file-info-menu)
+           ("x"   . dired-do-delete)
+           ("X"   . dired-do-flagged-delete)
+           ("y"   . dirvish-yank-menu)
+           ("s"   . dirvish-quicksort)
+           ("TAB" . dirvish-subtree-toggle)
+           ("M-t" . dirvish-layout-toggle)
+           ("M-b" . dirvish-history-go-backward)
+           ("M-f" . dirvish-history-go-forward)
+           ("M-n" . dirvish-narrow)
+           ("M-m" . dirvish-mark-menu)
+           ("M-s" . dirvish-setup-menu)
+           ("M-e" . dirvish-emerge-menu))
     :custom
-    (dirvish-attributes
-     '(vc-state file-size git-msg subtree-state all-the-icons collapse file-time))
-    (dired-listing-switches
-     "-l --almost-all --human-readable --group-directories-first --no-group")
-    (dirvish-side-attributes '(vc-state subtree-state nerd-icons))
+    (dirvish-attributes '(file-size subtree-state nerd-icons collapse file-time))
+    (dired-listing-switches "-l --almost-all --human-readable --group-directories-first")
+    (dirvish-side-attributes '(vc-state file-size subtree-state nerd-icons))
     (dirvish-side-mode-line-format nil)
+    (dirvish-subtree-state-style 'nerd)
+    (delete-by-moving-to-trash t)
+    (dirvish-path-separators (list (format "  %s " (nerd-icons-codicon "nf-cod-home"))
+                                   (format "  %s " (nerd-icons-codicon "nf-cod-root_folder"))
+                                   (format " %s " (nerd-icons-faicon "nf-fa-angle_right"))))
     :init
     (dirvish-override-dired-mode)
-    (dirvish-peek-mode))
+    :config
+    (dirvish-side-follow-mode t)
+    (dirvish-peek-mode t))
 #+end_src
 
 *** PDF viewer
